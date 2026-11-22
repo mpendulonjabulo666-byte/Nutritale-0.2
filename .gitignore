@@ -1,0 +1,18 @@
+# secrets: never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# dependencies and build output
+node_modules/
+dist/
+build/
+.expo/
+.next/
+coverage/
+
+# local files
+.DS_Store
+*.log
