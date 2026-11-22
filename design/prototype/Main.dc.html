@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NutriTale welcome and sign in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF8F1}
+a{color:#174C35}a:hover{color:#0F3624}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes sway{0%,100%{transform:rotate(0)}50%{transform:rotate(-2deg)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.rise{animation:rise .55s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}.d5{animation-delay:.4s}
+.logo{animation:sway 3s ease-in-out 1;transform-origin:50% 90%}
+.panel{animation:fadein .35s ease both}
+.press{transition:transform .15s ease,background-color .2s ease,box-shadow .2s ease}
+.press:active{transform:scale(.97)}
+.field:focus{border-color:#174C35;box-shadow:0 0 0 3px rgba(23,76,53,.18);outline:none}
+a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAF8F1; color: #202722; font-family: 'DM Sans', system-ui, sans-serif;">
+
+<sc-if value="{{isWelcome}}" hint-placeholder-val="{{ true }}">
+<main class="panel" style="height: 844px; display: flex; flex-direction: column; box-sizing: border-box; padding: 64px 28px 40px;">
+  <div class="rise" style="display: flex; justify-content: center; margin-top: 24px;">
+    <img class="logo" src="/_blob/d6a0dfea2e7acc8364e9584936286cf1" alt="NutriTale logo: an open recipe book with a fresh green sprig" style="width: 280px; height: auto;">
+  </div>
+  <p class="rise d1" style="margin: 28px 0 0; text-align: center; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #5B6A60;">NutriTale</p>
+  <h1 class="rise d2" style="margin: 10px 0 0; text-align: center; font-family: 'Playfair Display', serif; font-size: 34px; line-height: 1.15; font-weight: 600; color: #174C35;">Cook with what you already have.</h1>
+  <p class="rise d3" style="margin: 14px 8px 0; text-align: center; font-size: 16px; line-height: 1.5; color: #5B6A60;">Tell us what is in your kitchen. We find nourishing meals you can make tonight.</p>
+  <div style="flex-grow: 1;"></div>
+  <div class="rise d4" style="display: flex; flex-direction: column; gap: 12px;">
+    <button class="press" onClick="{{goRegister}}" style="height: 56px; border: none; border-radius: 16px; background: #174C35; color: #FFFFFF; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; cursor: pointer;">Create free account</button>
+    <button class="press" onClick="{{goSignin}}" style="height: 56px; border: 1.5px solid #174C35; border-radius: 16px; background: transparent; color: #174C35; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; cursor: pointer;">I already have an account</button>
+  </div>
+  <p class="rise d5" style="margin: 18px 0 0; text-align: center; font-size: 13px; line-height: 1.5; color: #5B6A60;">By continuing you agree to the <a href="#terms">Terms</a> and <a href="#privacy">Privacy Policy</a>.</p>
+</main>
+</sc-if>
+
+<sc-if value="{{isSignin}}" hint-placeholder-val="{{ false }}">
+<main class="panel" style="height: 844px; display: flex; flex-direction: column; box-sizing: border-box; padding: 56px 28px 40px;">
+  <button class="press" onClick="{{goWelcome}}" aria-label="Back" style="width: 44px; height: 44px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#174C35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+  </button>
+  <h1 class="rise" style="margin: 28px 0 0; font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 600; color: #174C35;">Welcome back</h1>
+  <p class="rise d1" style="margin: 8px 0 0; font-size: 16px; color: #5B6A60;">Your pantry is where you left it.</p>
+  <div class="rise d2" style="display: flex; flex-direction: column; gap: 18px; margin-top: 32px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <label for="si-email" style="font-size: 14px; font-weight: 600;">Email</label>
+      <input class="field" id="si-email" type="email" autocomplete="email" placeholder="you@example.com" style="height: 52px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; padding: 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <label for="si-pw" style="font-size: 14px; font-weight: 600;">Password</label>
+      <div style="position: relative;">
+        <input class="field" id="si-pw" type="{{pwType}}" autocomplete="current-password" style="width: 100%; box-sizing: border-box; height: 52px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; padding: 0 64px 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+        <button onClick="{{togglePw}}" aria-pressed="{{pwPressed}}" style="position: absolute; right: 4px; top: 4px; height: 44px; min-width: 56px; border: none; background: transparent; color: #174C35; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;">{{pwLabel}}</button>
+      </div>
+    </div>
+    <a href="#reset" style="align-self: flex-end; font-size: 14px; font-weight: 600; padding: 10px 0;">Forgot password?</a>
+  </div>
+  <div style="flex-grow: 1;"></div>
+  <a class="press rise d3" href="Home.dc.html" style="height: 56px; border-radius: 16px; background: #174C35; color: #FFFFFF; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center; text-decoration: none;">Sign in</a>
+  <p style="margin: 16px 0 0; text-align: center; font-size: 14px; color: #5B6A60;">New here? <button onClick="{{goRegister}}" style="border: none; background: none; padding: 10px 4px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #174C35; text-decoration: underline; cursor: pointer;">Create an account</button></p>
+</main>
+</sc-if>
+
+<sc-if value="{{isRegister}}" hint-placeholder-val="{{ false }}">
+<main class="panel" style="height: 844px; display: flex; flex-direction: column; box-sizing: border-box; padding: 56px 28px 36px; overflow-y: auto;">
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <button class="press" onClick="{{goWelcome}}" aria-label="Back" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#174C35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </button>
+    <div role="progressbar" aria-label="Sign-up progress" aria-valuemin="1" aria-valuemax="2" aria-valuenow="1" style="flex-grow: 1; height: 8px; border-radius: 4px; background: #EAF4ED; overflow: hidden;">
+      <div style="width: 50%; height: 8px; border-radius: 4px; background: #174C35;"></div>
+    </div>
+    <span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #5B6A60;">1 of 2</span>
+  </div>
+  <h1 class="rise" style="margin: 24px 0 0; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 600; color: #174C35;">Create your account</h1>
+  <div class="rise d1" style="display: flex; flex-direction: column; gap: 16px; margin-top: 22px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <label for="rg-name" style="font-size: 14px; font-weight: 600;">First name</label>
+      <input class="field" id="rg-name" type="text" autocomplete="given-name" style="height: 52px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; padding: 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <label for="rg-email" style="font-size: 14px; font-weight: 600;">Email</label>
+      <input class="field" id="rg-email" type="email" autocomplete="email" style="height: 52px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; padding: 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <label for="rg-pw" style="font-size: 14px; font-weight: 600;">Password</label>
+      <input class="field" id="rg-pw" type="password" autocomplete="new-password" aria-describedby="rg-pw-hint" style="height: 52px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; padding: 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+      <span id="rg-pw-hint" style="font-size: 13px; color: #5B6A60;">At least 10 characters. Pasting from a password manager works.</span>
+    </div>
+  </div>
+  <h2 class="rise d2" style="margin: 26px 0 4px; font-size: 17px; font-weight: 700;">Any allergies?</h2>
+  <p class="rise d2" style="margin: 0 0 12px; font-size: 14px; color: #5B6A60;">We hide recipes that contain them. Always check product labels too.</p>
+  <div class="rise d3" role="group" aria-label="Allergies" style="display: flex; flex-wrap: wrap; gap: 8px;">
+    <sc-for list="{{allergyChips}}" as="c" hint-placeholder-count="8" >
+      <button class="press" onClick="{{c.toggle}}" aria-pressed="{{c.pressed}}" style="{{c.style}}">{{c.label}}</button>
+    </sc-for>
+  </div>
+  <div style="flex-grow: 1; min-height: 24px;"></div>
+  <a class="press" href="Home.dc.html" style="flex-shrink: 0; height: 56px; border-radius: 16px; background: #174C35; color: #FFFFFF; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center; text-decoration: none;">Continue</a>
+</main>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mode: 'welcome', showPw: false, allergies: { Peanuts: true } };
+  }
+  renderVals() {
+    const s = this.state || {};
+    const mode = s.mode || 'welcome';
+    const on = s.allergies || {};
+    const base = 'min-height: 44px; padding: 0 16px; border-radius: 22px; font-family: DM Sans, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; ';
+    const names = ['Peanuts', 'Tree nuts', 'Milk', 'Eggs', 'Gluten cereals', 'Soy', 'Fish', 'Crustaceans and molluscs'];
+    const allergyChips = names.map((n) => {
+      const sel = !!on[n];
+      return {
+        label: sel ? '✓ ' + n : n,
+        pressed: sel ? 'true' : 'false',
+        style: base + (sel ? 'background: #174C35; color: #FFFFFF; border: 1.5px solid #174C35;' : 'background: #FFFFFF; color: #202722; border: 1.5px solid #5E8A6E;'),
+        toggle: () => this.setState({ allergies: Object.assign({}, on, { [n]: !sel }) })
+      };
+    });
+    return {
+      isWelcome: mode === 'welcome',
+      isSignin: mode === 'signin',
+      isRegister: mode === 'register',
+      goWelcome: () => this.setState({ mode: 'welcome' }),
+      goSignin: () => this.setState({ mode: 'signin' }),
+      goRegister: () => this.setState({ mode: 'register' }),
+      togglePw: () => this.setState({ showPw: !s.showPw }),
+      pwType: s.showPw ? 'text' : 'password',
+      pwLabel: s.showPw ? 'Hide' : 'Show',
+      pwPressed: s.showPw ? 'true' : 'false',
+      allergyChips
+    };
+  }
+}
+</script>
+</body>
+</html>

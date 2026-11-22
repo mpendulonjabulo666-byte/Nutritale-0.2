@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Recipe: Overnight Oats with Mixed Berries</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF8F1}
+a{color:#174C35}a:hover{color:#0F3624}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes zoomin{from{transform:scale(1.08)}to{transform:scale(1)}}
+@keyframes heart{0%{transform:scale(1)}35%{transform:scale(1.35)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+@keyframes fill{from{width:0}}
+.rise{animation:rise .55s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
+.hero{animation:zoomin 1.2s cubic-bezier(.2,.8,.2,1) both}
+.badge{animation:rise .5s cubic-bezier(.2,.8,.2,1) both, float 3s ease-in-out .6s 1}
+.b2{animation-delay:.15s,.9s}.b3{animation-delay:.3s,1.2s}
+.saved{animation:heart .45s ease}
+.bar{animation:fill .9s cubic-bezier(.2,.8,.2,1) .4s both}
+.press{transition:transform .15s ease,background-color .2s ease}
+.press:active{transform:scale(.96)}
+a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAF8F1; color: #202722; font-family: 'DM Sans', system-ui, sans-serif;">
+<main style="height: 844px; overflow-y: auto; box-sizing: border-box; padding-bottom: 110px; scroll-padding-bottom: 110px;">
+
+  <div style="position: relative; height: 380px; overflow: hidden;">
+    <img class="hero" src="/_blob/b33762010dc76b8f7327a4a75ab59cb7" alt="Honey poured over a bowl of oats topped with sliced almonds" style="width: 100%; height: 380px; object-fit: cover; display: block;">
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background: linear-gradient(180deg, rgba(250,248,241,0) 0%, #FAF8F1 100%);"></div>
+    <a class="press" href="Home.dc.html" aria-label="Back" style="position: absolute; left: 18px; top: 50px; width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,.15);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#174C35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <button class="press" onClick="{{toggleSave}}" aria-pressed="{{savedPressed}}" aria-label="Save to favourites" style="position: absolute; right: 18px; top: 50px; width: 44px; height: 44px; border-radius: 22px; border: none; background: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,.15); cursor: pointer;">
+      <sc-if value="{{saved}}" hint-placeholder-val="{{ false }}">
+        <svg class="saved" width="22" height="22" viewBox="0 0 24 24" fill="#B3261E" stroke="#B3261E" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>
+      </sc-if>
+      <sc-if value="{{notSaved}}" hint-placeholder-val="{{ true }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#174C35" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>
+      </sc-if>
+    </button>
+    <div aria-hidden="true">
+      <span class="badge" style="position: absolute; left: 18px; top: 236px; padding: 8px 12px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 8px 20px rgba(23,76,53,.18); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: #174C35;">340 kcal</span>
+      <span class="badge b2" style="position: absolute; right: 22px; top: 200px; padding: 8px 12px; border-radius: 14px; background: #174C35; box-shadow: 0 8px 20px rgba(23,76,53,.25); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: #FFFFFF;">12 g protein</span>
+      <span class="badge b3" style="position: absolute; right: 70px; top: 262px; padding: 8px 12px; border-radius: 14px; background: #EAF4ED; box-shadow: 0 8px 20px rgba(23,76,53,.18); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: #174C35;">9 g fibre</span>
+    </div>
+  </div>
+
+  <div style="padding: 0 22px; margin-top: -24px; position: relative;">
+    <div class="rise" style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <span style="padding: 6px 10px; border-radius: 10px; background: #EAF4ED; font-size: 13px; font-weight: 700; color: #174C35;">Vegetarian</span>
+      <span style="padding: 6px 10px; border-radius: 10px; background: #FBE3E1; font-size: 13px; font-weight: 700; color: #B3261E;">Contains milk</span>
+    </div>
+    <h1 class="rise d1" style="margin: 12px 0 0; font-family: 'Playfair Display', serif; font-size: 30px; line-height: 1.15; font-weight: 600; color: #174C35;">Overnight Oats with Mixed Berries</h1>
+    <dl class="rise d2" style="margin: 16px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+      <div style="padding: 12px; border-radius: 16px; background: #FFFFFF; text-align: center;"><dt style="font-size: 12px; color: #5B6A60;">Prep</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600;">10 min</dd></div>
+      <div style="padding: 12px; border-radius: 16px; background: #FFFFFF; text-align: center;"><dt style="font-size: 12px; color: #5B6A60;">Chill</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600;">6 h+</dd></div>
+      <div style="padding: 12px; border-radius: 16px; background: #FFFFFF; text-align: center;"><dt style="font-size: 12px; color: #5B6A60;">Serves</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600;">1</dd></div>
+    </dl>
+
+    <section class="rise d3" aria-labelledby="ing-h" style="margin-top: 26px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;">
+        <h2 id="ing-h" style="margin: 0; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600;">Ingredients</h2>
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: #174C35;">You have 3 of 5</span>
+      </div>
+      <div role="progressbar" aria-label="Ingredients you have" aria-valuemin="0" aria-valuemax="5" aria-valuenow="3" style="margin-top: 10px; height: 8px; border-radius: 4px; background: #EAF4ED; overflow: hidden;">
+        <div class="bar" style="width: 60%; height: 8px; border-radius: 4px; background: #174C35;"></div>
+      </div>
+      <ul style="list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+        <sc-for list="{{ingredients}}" as="i" hint-placeholder-count="5">
+          <li style="{{i.rowStyle}}">
+            <span style="{{i.dotStyle}}" aria-hidden="true"></span>
+            <span style="flex-grow: 1; font-size: 15px; font-weight: 600;">{{i.name}}</span>
+            <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #5B6A60;">{{i.amount}}</span>
+            <span style="{{i.tagStyle}}">{{i.tag}}</span>
+          </li>
+        </sc-for>
+      </ul>
+      <button class="press" onClick="{{addMissing}}" aria-pressed="{{addedPressed}}" style="margin-top: 12px; width: 100%; min-height: 52px; border-radius: 16px; border: 1.5px solid #174C35; background: {{addBg}}; color: {{addColor}}; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer;">{{addLabel}}</button>
+      <p role="status" aria-live="polite" style="margin: 8px 0 0; min-height: 20px; font-size: 14px; color: #174C35; font-weight: 600;">{{status}}</p>
+    </section>
+
+    <section aria-labelledby="steps-h" style="margin-top: 22px;">
+      <h2 id="steps-h" style="margin: 0; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600;">Method</h2>
+      <ol style="list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+        <li style="display: flex; gap: 14px;"><span style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: #174C35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600;">1</span><p style="margin: 5px 0 0; font-size: 16px; line-height: 1.5;">Combine oats, milk, chia seeds and honey in a jar.</p></li>
+        <li style="display: flex; gap: 14px;"><span style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: #174C35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600;">2</span><p style="margin: 5px 0 0; font-size: 16px; line-height: 1.5;">Stir well, cover and refrigerate overnight (at least 6 hours).</p></li>
+        <li style="display: flex; gap: 14px;"><span style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: #174C35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600;">3</span><p style="margin: 5px 0 0; font-size: 16px; line-height: 1.5;">Top with mixed berries before serving.</p></li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="nut-h" style="margin-top: 24px; padding: 18px; border-radius: 20px; background: #FFFFFF;">
+      <h2 id="nut-h" style="margin: 0; font-size: 16px; font-weight: 700;">Nutrition per serving</h2>
+      <p style="margin: 4px 0 12px; font-size: 13px; color: #8A5A00; font-weight: 600;">Estimated. Not yet verified against a food database.</p>
+      <dl style="margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; text-align: center;">
+        <div><dt style="font-size: 12px; color: #5B6A60;">Energy</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;">340 kcal</dd></div>
+        <div><dt style="font-size: 12px; color: #5B6A60;">Protein</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;">12 g</dd></div>
+        <div><dt style="font-size: 12px; color: #5B6A60;">Carbs</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;">52 g</dd></div>
+        <div><dt style="font-size: 12px; color: #5B6A60;">Fat</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;">9 g</dd></div>
+        <div><dt style="font-size: 12px; color: #5B6A60;">Fibre</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;">9 g</dd></div>
+      </dl>
+    </section>
+  </div>
+</main>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 22px 24px; background: linear-gradient(180deg, rgba(250,248,241,0) 0%, #FAF8F1 35%);">
+  <a class="press" href="Loader.dc.html" style="height: 58px; border-radius: 18px; background: #174C35; color: #FFFFFF; font-size: 17px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; box-shadow: 0 12px 26px rgba(23,76,53,.3);">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>Start cooking</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const saved = !!s.saved;
+    const added = !!s.added;
+    const list = [
+      { name: 'Rolled oats', amount: '1/2 cup', have: true },
+      { name: 'Milk', amount: '3/4 cup', have: true },
+      { name: 'Chia seeds', amount: '1 tbsp', have: false },
+      { name: 'Mixed berries', amount: '1/2 cup', have: false },
+      { name: 'Honey', amount: '1 tbsp', have: true }
+    ];
+    const ingredients = list.map((i) => ({
+      name: i.name, amount: i.amount,
+      tag: i.have ? 'Have' : (added ? 'On list' : 'Missing'),
+      rowStyle: 'display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; ' + (i.have ? 'background: #FFFFFF;' : 'background: #FFFFFF; border: 1.5px dashed #8A5A00;'),
+      dotStyle: 'width: 10px; height: 10px; border-radius: 5px; flex-shrink: 0; ' + (i.have ? 'background: #174C35;' : 'background: #8A5A00;'),
+      tagStyle: 'min-width: 58px; text-align: center; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; ' + (i.have ? 'background: #EAF4ED; color: #174C35;' : 'background: #F6E7C8; color: #8A5A00;')
+    }));
+    return {
+      ingredients, saved, notSaved: !saved,
+      savedPressed: saved ? 'true' : 'false',
+      toggleSave: () => this.setState({ saved: !saved }),
+      addMissing: () => this.setState({ added: !added }),
+      addedPressed: added ? 'true' : 'false',
+      addLabel: added ? 'Added 2 items to shopping list' : 'Add 2 missing to shopping list',
+      addBg: added ? '#EAF4ED' : '#FFFFFF',
+      addColor: '#174C35',
+      status: added ? 'Chia seeds and mixed berries are on your shopping list.' : ''
+    };
+  }
+}
+</script>
+</body>
+</html>

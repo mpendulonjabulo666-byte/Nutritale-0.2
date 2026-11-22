@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Did you mean and swaps</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF8F1}
+a{color:#174C35}a:hover{color:#0F3624}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes strike{from{width:0}to{width:100%}}
+@keyframes check{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}.d4{animation-delay:.4s}
+.typo{position:relative;display:inline-block}
+.typo::after{content:"";position:absolute;left:0;top:55%;height:2px;background:#B3261E;animation:strike .5s ease .5s both}
+.tick{stroke-dasharray:24;animation:check .35s ease both}
+.press{transition:transform .15s ease,background-color .2s ease,border-color .2s ease}
+.press:active{transform:scale(.97)}
+a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.typo::after{width:100%}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAF8F1; color: #202722; font-family: 'DM Sans', system-ui, sans-serif;">
+<main style="height: 844px; overflow-y: auto; box-sizing: border-box; padding: 52px 22px 40px;">
+
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <a class="press" href="Search.dc.html" aria-label="Back to search" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#174C35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <p style="margin: 0; font-size: 15px; color: #5B6A60;">You searched <span class="typo" style="font-weight: 700; color: #202722;">brinjol</span></p>
+  </div>
+
+  <section class="rise" aria-labelledby="dym-h" style="margin-top: 20px; border-radius: 24px; background: #174C35; color: #FFFFFF; padding: 22px; position: relative; overflow: hidden;">
+    <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#A9CDB6" stroke-width="0.6" aria-hidden="true" style="position: absolute; right: -30px; top: -30px; opacity: 0.35;"><path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14z"></path><path d="M5 19L13 11"></path></svg>
+    <p style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #A9CDB6;">Did you mean</p>
+    <h1 id="dym-h" style="margin: 6px 0 0; font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 600;">Brinjal</h1>
+    <p style="margin: 6px 0 0; font-size: 15px; color: #EAF4ED;">Also called eggplant or aubergine · Produce</p>
+    <div style="display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap;">
+      <button class="press" onClick="{{toggleList}}" aria-pressed="{{listPressed}}" style="min-height: 48px; padding: 0 18px; border-radius: 14px; border: none; background: #FFFFFF; color: #174C35; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer;">{{listLabel}}</button>
+      <a href="Search.dc.html" style="min-height: 48px; padding: 0 12px; display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #FFFFFF;">Search &#8220;brinjol&#8221; anyway</a>
+    </div>
+  </section>
+
+  <section class="rise d1" aria-labelledby="swap-h" style="margin-top: 26px;">
+    <h2 id="swap-h" style="margin: 0; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600;">No brinjal at home? Swap it</h2>
+    <p style="margin: 6px 0 14px; font-size: 14px; color: #5B6A60;">Swaps that work in stews and curries. Pick one to use in your recipe.</p>
+    <div role="group" aria-labelledby="swap-h" style="display: flex; flex-direction: column; gap: 10px;">
+      <sc-for list="{{swaps}}" as="w" hint-placeholder-count="3">
+        <button class="press" aria-pressed="{{w.checked}}" onClick="{{w.pick}}" style="{{w.style}}">
+          <span style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px; background: #EAF4ED; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; color: #174C35;" aria-hidden="true">{{w.initial}}</span>
+          <span style="flex-grow: 1; text-align: left;">
+            <span style="display: block; font-size: 16px; font-weight: 700; color: #202722;">{{w.name}}</span>
+            <span style="display: block; margin-top: 2px; font-size: 13px; color: #5B6A60;">{{w.note}}</span>
+          </span>
+          <span style="{{w.dotStyle}}" aria-hidden="true">
+            <sc-if value="{{w.on}}" hint-placeholder-val="{{ false }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="tick" d="M5 12l5 5L20 7"></path></svg>
+            </sc-if>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section class="rise d2" aria-labelledby="near-h" style="margin-top: 26px; padding: 18px; border-radius: 20px; background: #FFFFFF; box-shadow: 0 4px 14px rgba(23,76,53,.06);">
+    <h2 id="near-h" style="margin: 0; font-size: 16px; font-weight: 700;">Other names we understand</h2>
+    <ul style="list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
+      <li style="padding: 8px 12px; border-radius: 12px; background: #EAF4ED; font-size: 14px; font-weight: 600; color: #174C35;">eggplant</li>
+      <li style="padding: 8px 12px; border-radius: 12px; background: #EAF4ED; font-size: 14px; font-weight: 600; color: #174C35;">aubergine</li>
+      <li style="padding: 8px 12px; border-radius: 12px; background: #EAF4ED; font-size: 14px; font-weight: 600; color: #174C35;">brinjals</li>
+    </ul>
+  </section>
+
+  <p role="status" aria-live="polite" style="margin: 20px 0 0; min-height: 22px; font-size: 14px; font-weight: 600; color: #174C35;">{{status}}</p>
+
+  <a class="press rise d3" href="Recipe.dc.html" style="margin-top: 8px; height: 56px; border-radius: 16px; background: #174C35; color: #FFFFFF; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center; text-decoration: none;">Back to recipe</a>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const picked = s.picked || null;
+    const onList = !!s.onList;
+    const options = [
+      { name: 'Baby marrow', note: 'Holds its shape, cooks faster' },
+      { name: 'Butternut', note: 'Sweeter, needs longer to cook' },
+      { name: 'Mushrooms', note: 'Similar soft, meaty bite' }
+    ];
+    const swaps = options.map((o) => {
+      const on = picked === o.name;
+      return {
+        name: o.name, note: o.note, initial: o.name.charAt(0), on,
+        checked: on ? 'true' : 'false',
+        style: 'width: 100%; min-height: 72px; padding: 12px 14px; border-radius: 18px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-family: DM Sans, sans-serif; background: #FFFFFF; ' + (on ? 'border: 2px solid #174C35; box-shadow: 0 6px 18px rgba(23,76,53,.14);' : 'border: 1.5px solid #5E8A6E;'),
+        dotStyle: 'width: 26px; height: 26px; flex-shrink: 0; border-radius: 13px; display: flex; align-items: center; justify-content: center; ' + (on ? 'background: #174C35; border: 2px solid #174C35;' : 'background: #FFFFFF; border: 2px solid #5E8A6E;'),
+        pick: () => this.setState({ picked: o.name })
+      };
+    });
+    let status = '';
+    if (picked) status = picked + ' will replace brinjal in this recipe.';
+    if (onList) status = (status ? status + ' ' : '') + 'Brinjal is on your shopping list.';
+    return {
+      swaps, status,
+      listLabel: onList ? 'On shopping list' : 'Add to shopping list',
+      listPressed: onList ? 'true' : 'false',
+      toggleList: () => this.setState({ onList: !onList })
+    };
+  }
+}
+</script>
+</body>
+</html>

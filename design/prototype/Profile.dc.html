@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profile and settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF8F1}
+a{color:#174C35}a:hover{color:#0F3624}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}
+.press{transition:transform .15s ease,background-color .2s ease}
+.press:active{transform:scale(.96)}
+.knob{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.track{transition:background-color .25s ease}
+a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAF8F1; color: #202722; font-family: 'DM Sans', system-ui, sans-serif;">
+<main style="height: 844px; overflow-y: auto; box-sizing: border-box; padding: 52px 22px 120px; scroll-padding-bottom: 120px;">
+
+  <header class="rise" style="display: flex; align-items: center; gap: 16px;">
+    <div aria-hidden="true" style="width: 68px; height: 68px; border-radius: 34px; background: #174C35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600;">N</div>
+    <div style="flex-grow: 1;">
+      <h1 style="margin: 0; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: #174C35;">Your profile</h1>
+      <p style="margin: 2px 0 0; font-size: 14px; color: #5B6A60;">you@example.com</p>
+    </div>
+    <a href="#edit" style="min-height: 44px; padding: 0 6px; display: flex; align-items: center; font-size: 15px; font-weight: 700;">Edit</a>
+  </header>
+
+  <dl class="rise d1" style="margin: 20px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+    <div style="padding: 14px 8px; border-radius: 18px; background: #FFFFFF; text-align: center;"><dt style="font-size: 12px; color: #5B6A60;">Pantry</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #174C35;">12</dd></div>
+    <div style="padding: 14px 8px; border-radius: 18px; background: #FFFFFF; text-align: center;"><dt style="font-size: 12px; color: #5B6A60;">Favourites</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #174C35;">{{favCount}}</dd></div>
+    <div style="padding: 14px 8px; border-radius: 18px; background: #FFFFFF; text-align: center;"><dt style="font-size: 12px; color: #5B6A60;">Cooked</dt><dd style="margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #174C35;">0</dd></div>
+  </dl>
+
+  <section class="rise d2" aria-labelledby="diet-h" style="margin-top: 24px;">
+    <h2 id="diet-h" style="margin: 0; font-size: 17px; font-weight: 700;">How I eat</h2>
+    <div role="group" aria-labelledby="diet-h" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+      <sc-for list="{{diets}}" as="c" hint-placeholder-count="5">
+        <button class="press" onClick="{{c.toggle}}" aria-pressed="{{c.pressed}}" style="{{c.style}}">{{c.label}}</button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section class="rise d2" aria-labelledby="all-h" style="margin-top: 22px;">
+    <h2 id="all-h" style="margin: 0; font-size: 17px; font-weight: 700;">My allergies</h2>
+    <p style="margin: 4px 0 0; font-size: 14px; color: #5B6A60;">Recipes with these are hidden. Always check product labels too.</p>
+    <div role="group" aria-labelledby="all-h" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+      <sc-for list="{{allergies}}" as="c" hint-placeholder-count="8">
+        <button class="press" onClick="{{c.toggle}}" aria-pressed="{{c.pressed}}" style="{{c.style}}">{{c.label}}</button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section class="rise d3" aria-labelledby="set-h" style="margin-top: 24px; border-radius: 20px; background: #FFFFFF; padding: 6px 16px;">
+    <h2 id="set-h" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Settings</h2>
+    <div style="display: flex; align-items: center; gap: 12px; min-height: 64px; border-bottom: 1px solid #EAF4ED;">
+      <div style="flex-grow: 1;">
+        <p id="hh-l" style="margin: 0; font-size: 16px; font-weight: 600;">People I cook for</p>
+        <p style="margin: 2px 0 0; font-size: 13px; color: #5B6A60;">Scales recipe amounts</p>
+      </div>
+      <button class="press" onClick="{{hhDec}}" aria-label="Fewer people" style="width: 44px; height: 44px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; color: #174C35; font-size: 22px; cursor: pointer;">−</button>
+      <span aria-live="polite" aria-describedby="hh-l" style="min-width: 28px; text-align: center; font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600;">{{household}}</span>
+      <button class="press" onClick="{{hhInc}}" aria-label="More people" style="width: 44px; height: 44px; border-radius: 14px; border: none; background: #174C35; color: #FFFFFF; font-size: 22px; cursor: pointer;">+</button>
+    </div>
+    <sc-for list="{{switches}}" as="w" hint-placeholder-count="3">
+      <div style="display: flex; align-items: center; gap: 12px; min-height: 64px; border-bottom: 1px solid #EAF4ED;">
+        <div style="flex-grow: 1;">
+          <p style="margin: 0; font-size: 16px; font-weight: 600;">{{w.label}}</p>
+          <p style="margin: 2px 0 0; font-size: 13px; color: #5B6A60;">{{w.hint}}</p>
+        </div>
+        <button role="switch" aria-checked="{{w.checked}}" aria-label="{{w.label}}" onClick="{{w.toggle}}" style="width: 56px; height: 44px; flex-shrink: 0; border: none; background: transparent; padding: 0; cursor: pointer; display: flex; align-items: center;">
+          <span class="track" style="{{w.trackStyle}}"><span class="knob" style="{{w.knobStyle}}"></span></span>
+        </button>
+      </div>
+    </sc-for>
+    <a href="#privacy" style="display: flex; align-items: center; min-height: 56px; font-size: 16px; font-weight: 600; text-decoration: none; color: #202722; border-bottom: 1px solid #EAF4ED;">Privacy policy</a>
+    <a href="#delete" style="display: flex; align-items: center; min-height: 56px; font-size: 16px; font-weight: 600; text-decoration: none; color: #B3261E;">Delete my account</a>
+  </section>
+
+  <a class="press rise d4" href="Main.dc.html" style="margin-top: 18px; height: 54px; border-radius: 16px; border: 1.5px solid #174C35; color: #174C35; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;">Sign out</a>
+  <p style="margin: 12px 0 0; text-align: center; font-size: 13px; color: #5B6A60;">NutriTale is built with the help of AI tools.</p>
+</main>
+
+<nav aria-label="Main" style="position: absolute; left: 12px; right: 12px; bottom: 14px; height: 72px; border-radius: 26px; background: #FFFFFF; box-shadow: 0 10px 30px rgba(23,76,53,.16); display: flex; justify-content: space-around; align-items: center; padding: 0 4px;">
+  <a href="Home.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Home</a>
+  <a href="Pantry.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v3H8z"></path><path d="M7 6h10l1 3v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9z"></path><path d="M6 12h12"></path></svg>Pantry</a>
+  <a href="Search.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg>Discover</a>
+  <a href="Shopping.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h14l-1.5 10.5a1 1 0 0 1-1 .5h-9a1 1 0 0 1-1-.5z"></path><path d="M9 9l3-5 3 5"></path></svg>Shopping</a>
+  <a href="Profile.dc.html" aria-current="page" style="min-width: 64px; height: 58px; border-radius: 18px; background: #EAF4ED; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #174C35; font-size: 12px; font-weight: 700;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const base = 'min-height: 44px; padding: 0 16px; border-radius: 22px; font-family: DM Sans, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; ';
+    const chipStyle = (on) => base + (on ? 'background: #174C35; color: #FFFFFF; border: 1.5px solid #174C35;' : 'background: #FFFFFF; color: #202722; border: 1.5px solid #5E8A6E;');
+    const makeChips = (key, names, defaults) => {
+      const sel = s[key] || defaults;
+      return names.map((n) => {
+        const on = !!sel[n];
+        return { label: on ? '✓ ' + n : n, pressed: on ? 'true' : 'false', style: chipStyle(on), toggle: () => this.setState({ [key]: Object.assign({}, sel, { [n]: !on }) }) };
+      });
+    };
+    const diets = makeChips('diets', ['Vegetarian', 'Vegan', 'Halaal', 'No pork', 'Kid-friendly'], { 'Kid-friendly': true });
+    const allergies = makeChips('allergies', ['Peanuts', 'Tree nuts', 'Milk', 'Eggs', 'Gluten cereals', 'Soy', 'Fish', 'Crustaceans and molluscs'], { Peanuts: true });
+    const sw = s.sw || { expiry: true, saver: false, motion: false };
+    const switchDefs = [
+      { key: 'expiry', label: 'Use-soon reminders', hint: 'A reminder 2 days before food expires' },
+      { key: 'saver', label: 'Data saver', hint: 'Smaller photos, saves mobile data' },
+      { key: 'motion', label: 'Reduce motion', hint: 'Also follows your phone setting' }
+    ];
+    const switches = switchDefs.map((d) => {
+      const on = !!sw[d.key];
+      return {
+        label: d.label, hint: d.hint, checked: on ? 'true' : 'false',
+        trackStyle: 'display: block; position: relative; width: 52px; height: 32px; border-radius: 16px; ' + (on ? 'background: #174C35;' : 'background: #FFFFFF; box-shadow: inset 0 0 0 2px #5E8A6E;'),
+        knobStyle: 'position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.25); ' + (on ? 'background: #FFFFFF; transform: translateX(20px);' : 'background: #5E8A6E; transform: translateX(0);'),
+        toggle: () => this.setState({ sw: Object.assign({}, sw, { [d.key]: !on }) })
+      };
+    });
+    const hh = s.hh || 2;
+    return {
+      diets, allergies, switches,
+      household: hh,
+      hhDec: () => this.setState({ hh: Math.max(1, hh - 1) }),
+      hhInc: () => this.setState({ hh: Math.min(12, hh + 1) }),
+      favCount: 1
+    };
+  }
+}
+</script>
+</body>
+</html>
