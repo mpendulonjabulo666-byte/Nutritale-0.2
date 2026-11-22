@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTabBarClearance } from '@/components/floating-tab-bar';
 import { RiseIn } from '@/components/rise-in';
 import { cardShadow, colors, fonts, radius, roles, spacing } from '@/theme';
 
@@ -13,9 +14,10 @@ type Props = {
 };
 
 export function PlaceholderScreen({ title, intro, plannedItems, children }: Props) {
+  const bottomClearance = useTabBarClearance();
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: bottomClearance }]}>
         <RiseIn index={0}>
           <Text accessibilityRole="header" style={styles.title}>
             {title}
@@ -40,8 +42,8 @@ export function PlaceholderScreen({ title, intro, plannedItems, children }: Prop
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: roles.background },
-  // Bottom padding so the tab bar never covers the last item (brief section 4).
-  content: { paddingHorizontal: spacing.screenSide, paddingTop: spacing.xxl, paddingBottom: 120, gap: spacing.xl },
+  // paddingBottom comes from useTabBarClearance() so the floating bar never covers the last item (brief section 4).
+  content: { paddingHorizontal: spacing.screenSide, paddingTop: spacing.xxl, gap: spacing.xl },
   title: { fontSize: 32, color: colors.forest, fontFamily: fonts.display },
   intro: { fontSize: 16, lineHeight: 24, color: roles.text, marginTop: spacing.xs, fontFamily: fonts.body },
   card: {

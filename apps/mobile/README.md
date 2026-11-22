@@ -60,12 +60,18 @@ Screens are built with `StyleSheet` and the shared tokens instead. Check again w
 ## What is here
 - `src/app/index.tsx`: redirects to `/welcome` (no auth yet, so everyone is signed out).
 - `src/app/welcome.tsx`: public signed-out entry. Sign-in and register are not built yet; the buttons open the tabs as a placeholder.
-- `src/app/(tabs)/`: Home, Pantry, Discover, Shopping, Profile. Icon and label always visible. Profile has "Sign out", which returns to `/welcome`.
+- `src/app/(tabs)/`: Home, Pantry, Discover, Shopping, Profile. Profile has "Sign out", which returns to `/welcome`.
+- `src/components/floating-tab-bar.tsx` (job J03c): the floating bar from `design/prototype/Home.dc.html`. White, 72 tall,
+  radius 26, 12 from the sides, one soft forest shadow. Icon and label always visible; the active tab gets a mint pill
+  (opacity fade over the `base` token) and a bold forest label. Each tab is at least 60 x 60, with role "tab" and its
+  selected state. Icons use the prototype's own SVG paths. The bar sits above the home indicator or gesture bar and hides
+  while the keyboard is open. Tab screens take their bottom padding from `useTabBarClearance()`, so the bar never covers
+  the last item. Labels stop growing at 1.3x system text size so five labels still fit: check on a phone at the largest
+  text size. Checked 22 Nov 2026 in Expo web (desktop width): tabs switch, the pill follows, fonts load, no console errors.
 - `src/theme/`: re-exports `@nutritale/shared` tokens and builds the Reanimated easing from `cubic-bezier(.2,.8,.2,1)`.
 - Reduced motion: `ReducedMotionConfig mode={ReduceMotion.System}` in the root layout, plus `useReduceMotion()` (live `AccessibilityInfo` listener). With it on, `RiseIn` and the button press scale do not animate.
 
 ## Not done yet
-- The floating custom tab bar from the prototype (J03). The standard Expo Router tab bar is styled with the tokens for now.
 - No run on a phone or emulator. Checked only with `tsc --noEmit` and `npx expo export --platform android` (Metro bundle).
 
 ## Commands
