@@ -20,11 +20,13 @@ Working rules for every phase:
 | D3 | Target dates | OPEN |
 | D4 | Chat model provider and monthly cost limit | OPEN. Pricing not checked. |
 | D5 | Map provider (start with opening Apple Maps and Google Maps) | OPEN. Pricing not checked. |
-| D6 | Subscription billing route for the store apps (direct Apple and Google billing, or a billing service) | OPEN. Pricing not checked. |
+| D6 | Subscription billing route for the store apps (direct Apple and Google billing, or a billing service) | OPEN. Rules per region now in `docs/DESIGN_BRIEF.md` section 5.5. In-app purchase is required on iPhone so web subscribers can unlock Premium. |
 | D7 | Who owns the product, the code and the store accounts (owner, or Miss Mvula's business) | OPEN |
 | D8 | Open Food Facts terms: attribution and share-alike duties | OPEN. Read their terms of use. |
 | D9 | Web framework details and package manager | OPEN. Mobile stack proposed in `docs/DESIGN_BRIEF.md` section 6.3 (Expo SDK 58, Reanimated 4, React Native Reusables + NativeWind). |
 | D10 | Server-side search engine for the catalogue (Atlas Search or an alias collection) | OPEN |
+| D12 | First launch markets (the app is international) | OPEN. Research inference: South Africa first, then the UK or US; hold the EU because of VAT and claim rules. See `docs/research/international_launch_rules.md`. |
+| D13 | Web payment provider for foreign currencies (SA seller) | OPEN. PayFast and Paystack confirmed for ZAR; Paddle and Stripe not confirmed for SA sellers; Lemon Squeezy closing 31 Mar 2027. |
 | D11 | Photo source and licences for launch | OPEN. The four legacy photos in the prototype have no licence on record. |
 
 ## Phase 0 — Audit and setup

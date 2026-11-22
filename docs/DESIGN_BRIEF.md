@@ -2,7 +2,8 @@
 
 **Status:** DRAFT for the owner's review. Written 22 Nov 2026.
 **Prototype:** the clickable canvas "NutriTale V1 Prototype" (claude.ai artifact, private to the owner). Its source files are copied in `design/prototype/`.
-**Research behind this brief:** `docs/research/` (three note files, every claim with a source link).
+**Research behind this brief:** `docs/research/` (four note files, every claim with a source link).
+**Market:** international (owner's decision, 22 Nov 2026). Not South Africa only. First launch markets: decision D12, OPEN.
 
 Labels used here: **Checked** (a source was read, named in `docs/research/`), **Estimate**, **UNKNOWN**.
 
@@ -21,6 +22,18 @@ Build only these five modules:
 | 5 | Shopping list | Missing ingredients from recipes, add and remove, mark bought, categories |
 
 **Not in V1:** food chat, maps and stores, weekly planner, advanced admin, advanced analytics, Vex integration, subscriptions and payments. Keep the code modular so they plug in later.
+
+### 1.1 Built for many countries from day one
+The build must not hard-code South Africa. Each user has a `market` (country) and a `locale` (language and region, for example `en-ZA`, `en-GB`, `en-US`).
+
+| What changes per market | Rule |
+|---|---|
+| Ingredient names | Aliases are stored per locale. Coriander shows as Cilantro in `en-US`; dhania finds it in `en-ZA`. Package: `packages/catalogue-search`. |
+| Allergen list | Each market has its own allergen set (section 5.3). |
+| Currency and prices | Stored per market. Never show a price in a currency the payment provider cannot charge. |
+| Units | Metric by default; cups and ounces where the locale uses them. Store amounts in metric, convert on display. |
+| Spelling and text | Every string comes from a translation file from the start (English variants first). No text in code. |
+| Legal pages | One privacy policy and terms set per market group, reviewed before that market opens. |
 
 ## 2. Brand tokens
 
@@ -66,7 +79,7 @@ Minimum body size: 16. Nothing below 12. Every size must still work at 200% syst
 
 The owner named Uber Eats, Duolingo and Yelp. We copy none of their screens. We take one principle from each. Sources: `docs/research/reference_app_ux.md`.
 
-1. **From Uber Eats: search that understands food.** Uber's 2018 search post describes a food knowledge graph and query expansion (a search for one dish also finds related dishes). NutriTale does the same with a South African alias list: dhania = coriander, mealie meal = maize meal, brinjal = eggplant.
+1. **From Uber Eats: search that understands food.** Uber's 2018 search post describes a food knowledge graph and query expansion (a search for one dish also finds related dishes). NutriTale does the same with alias lists per country: dhania (South Africa) and cilantro (US) both find coriander; brinjal, aubergine and eggplant are one ingredient.
 2. **From Duolingo: motion that rewards.** Small, quick reactions to every action (a tick draws, a heart pops, a ring fills). Duolingo's published lesson: timing matters as much as the drawing. Celebrations must make sense in every culture.
 3. **From Yelp: information in clear blocks.** Each fact in its own card (time, serves, nutrition, allergens). The same pattern everywhere.
 
@@ -93,13 +106,14 @@ The owner named Uber Eats, Duolingo and Yelp. We copy none of their screens. We 
 | 8 | Profile and settings | `Profile.dc.html` | Diet and allergy chips, people I cook for, reminders, data saver, reduce motion, privacy, delete account, sign out to the welcome screen. |
 | + | Loader | `Loader.dc.html` | Custom NutriTale loader: the book's pages turn while a sprout grows. No generic spinner. |
 
-### 5.1 States every screen must have (not all are drawn yet)
+### 5.1 States every screen must have (drawn in `States.dc.html` and the sign-in screen)
 | State | Rule |
 |---|---|
 | Loading | Use the NutriTale loader for waits over 1 second. Use skeleton cards for lists. |
 | Empty | Say what this is, why it is empty and the next step ("No items yet. Add your first ingredient.") |
-| Error | Say what happened, why, and how to fix it. Put the message next to the field and announce it. **NOT DRAWN YET.** |
-| Offline | Show saved pantry and recipes. Say "You are offline" in a status line. **NOT DRAWN YET.** |
+| Error | Say what happened, why, and how to fix it. Put the message next to the field and announce it. Drawn: sign-in field errors, "We couldn't load your recipes" with Try again. |
+| Offline | Show saved pantry and recipes. Say "You are offline" in a status line. Changes wait to sync. Drawn. |
+| No match | When several ingredients match no recipe, offer "Without X" rows with real counts. Drawn. |
 
 ### 5.2 Search: the "no dead end" ladder
 The prototype runs this logic (tested 22 Nov 2026 with node: dhania → Coriander, brinjol → did you mean Brinjal, tomatos → Tomatoes, chick peas → Chickpeas, mealie meal → Maize meal, xyzberry → add as own item).
@@ -114,15 +128,28 @@ The prototype runs this logic (tested 22 Nov 2026 with node: dhania → Coriande
 
 Production note: the API does this on the server (MongoDB Atlas Search or a normalised alias collection). The decision is OPEN; it goes into `DEVELOPMENT_ROADMAP.md`, Phase 2.
 
-### 5.3 Allergens
-- Mirror the eight allergen groups of South African regulation R146 (in force): egg, milk, crustaceans and molluscs, fish, peanuts, soy, tree nuts, gluten cereals. Source: `docs/research/mobile_accessibility_rules.md`. The newer draft (R3337) is not final. Check it again before launch.
+### 5.3 Allergens (per market)
+- Store one allergen set per market. The user's market decides which chips the app shows. Every recipe ingredient maps to allergen groups once; each market's set is a view over those groups.
+- **South Africa:** R146 (in force): egg, milk, crustaceans and molluscs, fish, peanuts, soy, tree nuts, gluten cereals. Draft R3337 is not law yet (tabled at Nedlac 26 Aug 2026, no publication date). Source: `docs/research/international_launch_rules.md`. The R146 list came from a secondary source: check the Gazette text.
+- **EU and UK (14 groups) and US (9, including sesame):** listed in the research notes but UNVERIFIED. Check the official texts (links in the notes) before those markets open.
+- Nigeria, Kenya and other markets: not researched yet.
 - Allergen tags use the alert colours **and** a word ("Contains milk").
 - The app hides recipes with a selected allergen and still says "Always check product labels too".
 
 ### 5.4 Nutrition
 - Show values only with a named source. Otherwise label them "Estimated. Not yet verified."
-- Do not use regulated claim words: "low fat", "source of", "light", "healthy" as a claim. Brand copy says "nourishing".
+- Do not use regulated claim words: "low fat", "source of", "light", "healthy" as a claim. Brand copy says "nourishing". No official guidance was found that applies label-claim law to recipe apps (inference: likely outside it), so stay cautious in every market and in store listings.
 - The prototype values (340 kcal and so on) come from the legacy seed file `data/seed_recipes.php`. They are NOT verified.
+
+### 5.5 Payments (later release, designed now so V1 does not block it)
+Subscriptions are not in V1. These rules are here so the data model is right from the start. Source: `docs/research/international_launch_rules.md` (checked 22 Nov 2026; store rules change often, check again before building).
+
+1. **One entitlement record per user** ("is Premium", which plan, which provider, expiry). The website, Apple and Google all write to it. Every app checks only this record.
+2. **Website:** any provider. Known for a South African seller: PayFast (3.2% + R2 per card, ex VAT; takes international Visa and Mastercard) and Paystack (ZAR only for SA businesses). A provider that charges in USD, GBP or EUR for an SA seller is NOT confirmed yet (Paddle and Stripe: unconfirmed; Lemon Squeezy is closing on 31 Mar 2027, do not use). Decision D13.
+3. **iPhone app:** Apple in-app purchase is required. A link or button to pay on the website is allowed only in some storefronts: the US (Apple may charge a "reasonable fee" there; the amount is still in court, Supreme Court argument 11 Jan 2027) and the EU (from 1 Oct 2026: link-out fee 15%, or 10% for small businesses). In South Africa and most other countries the app may not link to web payment.
+4. **Web subscribers on iPhone:** they can unlock Premium in the iOS app by signing in, but only if the same subscription is also sold as an in-app purchase (Apple rule 3.1.3(b)).
+5. **Android app:** Google Play Billing. In the US, UK and EEA (from 30 Jun 2026) the app may also offer its own payment or a web link. A 10% service fee on subscriptions applies whichever way the user pays, plus 5% only when Play Billing is used.
+6. **Never** mention cheaper web prices inside an app where linking out is not allowed.
 
 ## 6. Motion system
 
@@ -178,7 +205,7 @@ Do not use Moti: last release January 2025, Reanimated 4 support UNVERIFIED.
 Method: code review of the seven prototype files, plus contrast calculations. **Not done:** screen reader testing, 200% font size test, testing on a real phone. Those happen on the built app.
 
 ### Summary
-Issues found: 10. Fixed in the prototype: 6. Open for the build: 4.
+Issues found: 10. Fixed in the prototype: 7. Open for the build: 3.
 
 | # | Issue | WCAG | Severity | Status |
 |---|---|---|---|---|
@@ -187,7 +214,7 @@ Issues found: 10. Fixed in the prototype: 6. Open for the build: 4.
 | 3 | Loader message announced every 1.6 s | 4.1.3 | Major | FIXED: one hidden "Loading recipe ideas" status |
 | 4 | Bottom bar could cover the focused item | 2.4.11 (2.2) | Major | FIXED: `scroll-padding-bottom` on scroll areas |
 | 5 | `sage` failed for text and borders on light backgrounds | 1.4.3, 1.4.11 | Critical | FIXED: `sageDeep` and `muted` added |
-| 6 | No error states drawn for sign-in and registration | 3.3.1 | Major | OPEN: draw them before the build |
+| 6 | No error states drawn for sign-in and registration | 3.3.1 | Major | FIXED: sign-in shows field errors with `aria-invalid` and `role="alert"`; registration errors follow the same pattern in the build |
 | 7 | Shopping and Profile tabs led nowhere | 2.4.4 | Minor | FIXED: both screens designed and linked |
 | 8 | Screens are fixed at 390 px; 200% text not tested | 1.4.4 | Major | OPEN: test in the build with system font size at maximum |
 | 9 | White text on the pantry photo header: contrast depends on the photo | 1.4.3 | Minor | OPEN: keep the dark overlay; check each real photo |
@@ -212,3 +239,5 @@ Issues found: 10. Fixed in the prototype: 6. Open for the build: 4.
 - Photo licences for the four legacy photos.
 - Whether R146 applies to app content at all, and the final text of R3337.
 - Whether `clsx` and `tailwind-merge` work inside React Native Reusables.
+- Allergen lists for the EU, UK, US and other markets against their official texts.
+- Which web payment provider can charge foreign currencies for a South African seller.

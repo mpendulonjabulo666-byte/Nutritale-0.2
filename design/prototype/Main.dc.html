@@ -56,19 +56,28 @@ a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3p
   <div class="rise d2" style="display: flex; flex-direction: column; gap: 18px; margin-top: 32px;">
     <div style="display: flex; flex-direction: column; gap: 8px;">
       <label for="si-email" style="font-size: 14px; font-weight: 600;">Email</label>
-      <input class="field" id="si-email" type="email" autocomplete="email" placeholder="you@example.com" style="height: 52px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; padding: 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+      <input class="field" id="si-email" type="email" autocomplete="email" placeholder="you@example.com" value="{{email}}" onInput="{{onEmail}}" aria-invalid="{{emailInvalid}}" aria-describedby="si-email-err" style="height: 52px; border-radius: 14px; border: {{emailBorder}}; background: #FFFFFF; padding: 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <p id="si-email-err" role="alert" style="margin: 0; min-height: 0; font-size: 14px; font-weight: 600; color: #B3261E;">{{emailErr}}</p>
     </div>
     <div style="display: flex; flex-direction: column; gap: 8px;">
       <label for="si-pw" style="font-size: 14px; font-weight: 600;">Password</label>
       <div style="position: relative;">
-        <input class="field" id="si-pw" type="{{pwType}}" autocomplete="current-password" style="width: 100%; box-sizing: border-box; height: 52px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; padding: 0 64px 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
+        <input class="field" id="si-pw" type="{{pwType}}" autocomplete="current-password" value="{{pw}}" onInput="{{onPw}}" aria-invalid="{{pwInvalid}}" aria-describedby="si-pw-err" style="width: 100%; box-sizing: border-box; height: 52px; border-radius: 14px; border: {{pwBorder}}; background: #FFFFFF; padding: 0 64px 0 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #202722;">
         <button onClick="{{togglePw}}" aria-pressed="{{pwPressed}}" style="position: absolute; right: 4px; top: 4px; height: 44px; min-width: 56px; border: none; background: transparent; color: #174C35; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;">{{pwLabel}}</button>
       </div>
     </div>
+    <p id="si-pw-err" role="alert" style="margin: -10px 0 0; font-size: 14px; font-weight: 600; color: #B3261E;">{{pwErr}}</p>
     <a href="#reset" style="align-self: flex-end; font-size: 14px; font-weight: 600; padding: 10px 0;">Forgot password?</a>
   </div>
   <div style="flex-grow: 1;"></div>
-  <a class="press rise d3" href="Home.dc.html" style="height: 56px; border-radius: 16px; background: #174C35; color: #FFFFFF; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center; text-decoration: none;">Sign in</a>
+  <sc-if value="{{canGo}}" hint-placeholder-val="{{ false }}">
+    <a class="press" href="Home.dc.html" style="height: 56px; border-radius: 16px; background: #174C35; color: #FFFFFF; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center; text-decoration: none;">Sign in</a>
+  </sc-if>
+  <sc-if value="{{cannotGo}}" hint-placeholder-val="{{ true }}">
+    <button class="press" onClick="{{submit}}" style="height: 56px; border: none; border-radius: 16px; background: #174C35; color: #FFFFFF; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; cursor: pointer;">Sign in</button>
+  </sc-if>
   <p style="margin: 16px 0 0; text-align: center; font-size: 14px; color: #5B6A60;">New here? <button onClick="{{goRegister}}" style="border: none; background: none; padding: 10px 4px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #174C35; text-decoration: underline; cursor: pointer;">Create an account</button></p>
 </main>
 </sc-if>
@@ -124,6 +133,9 @@ class Component extends DCLogic {
     const s = this.state || {};
     const mode = s.mode || 'welcome';
     const on = s.allergies || {};
+    const email = (s.email || '').trim();
+    const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    const pwOk = (s.pw || '').length > 0;
     const base = 'min-height: 44px; padding: 0 16px; border-radius: 22px; font-family: DM Sans, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; ';
     const names = ['Peanuts', 'Tree nuts', 'Milk', 'Eggs', 'Gluten cereals', 'Soy', 'Fish', 'Crustaceans and molluscs'];
     const allergyChips = names.map((n) => {
@@ -146,6 +158,19 @@ class Component extends DCLogic {
       pwType: s.showPw ? 'text' : 'password',
       pwLabel: s.showPw ? 'Hide' : 'Show',
       pwPressed: s.showPw ? 'true' : 'false',
+      email: s.email || '',
+      pw: s.pw || '',
+      onEmail: (e) => this.setState({ email: e.target.value }),
+      onPw: (e) => this.setState({ pw: e.target.value }),
+      emailErr: s.tried && !emailOk ? (email ? 'Check your email address. It needs an @ and a dot, like you@example.com.' : 'Enter your email address.') : '',
+      pwErr: s.tried && !pwOk ? 'Enter your password.' : '',
+      emailInvalid: s.tried && !emailOk ? 'true' : 'false',
+      pwInvalid: s.tried && !pwOk ? 'true' : 'false',
+      emailBorder: s.tried && !emailOk ? '2px solid #B3261E' : '1.5px solid #5E8A6E',
+      pwBorder: s.tried && !pwOk ? '2px solid #B3261E' : '1.5px solid #5E8A6E',
+      canGo: emailOk && pwOk,
+      cannotGo: !(emailOk && pwOk),
+      submit: () => this.setState({ tried: true }),
       allergyChips
     };
   }

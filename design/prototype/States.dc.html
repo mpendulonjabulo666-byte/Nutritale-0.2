@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Empty, offline and error states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF8F1}
+a{color:#174C35}a:hover{color:#0F3624}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
+.rise{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.skel{background:linear-gradient(90deg,#EAF4ED 0px,#F5FAF6 80px,#EAF4ED 160px);background-size:400px 100%;animation:shimmer 1.4s linear infinite}
+.press{transition:transform .15s ease,background-color .2s ease}
+.press:active{transform:scale(.96)}
+.scroller{scrollbar-width:none}.scroller::-webkit-scrollbar{display:none}
+a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAF8F1; color: #202722; font-family: 'DM Sans', system-ui, sans-serif;">
+<main style="height: 844px; overflow-y: auto; box-sizing: border-box; padding: 52px 22px 40px;">
+  <p style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #5B6A60;">Screen states</p>
+  <h1 style="margin: 4px 0 0; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: #174C35;">When things are not normal</h1>
+
+  <div class="scroller" role="group" aria-label="Choose a state to preview" style="display: flex; gap: 8px; overflow-x: auto; margin: 16px -22px 0; padding: 0 22px 4px;">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+      <button class="press" onClick="{{t.pick}}" aria-pressed="{{t.pressed}}" style="{{t.style}}">{{t.label}}</button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{isEmpty}}" hint-placeholder-val="{{ true }}">
+    <section class="rise" aria-labelledby="e-h" style="margin-top: 40px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#EAF4ED"></circle><path d="M44 34h32v10H44z" fill="#A9CDB6"></path><path d="M40 44h40l4 10v34a4 4 0 0 1-4 4H40a4 4 0 0 1-4-4V54z" fill="#FFFFFF" stroke="#5E8A6E" stroke-width="3"></path><path d="M48 70h24" stroke="#5E8A6E" stroke-width="3" stroke-linecap="round"></path></svg>
+      <h2 id="e-h" style="margin: 18px 0 0; font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 600;">Your pantry is empty</h2>
+      <p style="margin: 8px 12px 0; font-size: 16px; line-height: 1.5; color: #5B6A60;">Add what you have at home. We use it to find meals you can cook right now.</p>
+      <a class="press" href="Search.dc.html" style="margin-top: 22px; min-height: 52px; padding: 0 22px; border-radius: 16px; background: #174C35; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; text-decoration: none;">Add your first ingredient</a>
+      <a href="#scan" style="margin-top: 8px; padding: 12px; font-size: 15px; font-weight: 600;">Start with common basics</a>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{isNoMatch}}" hint-placeholder-val="{{ false }}">
+    <section class="rise" aria-labelledby="n-h" style="margin-top: 32px;">
+      <h2 id="n-h" style="margin: 0; font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 600;">No recipe uses all of these</h2>
+      <p style="margin: 8px 0 0; font-size: 16px; line-height: 1.5; color: #5B6A60;">You picked spinach, oats and pilchards. Drop one to see more:</p>
+      <ul style="list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li><a class="press" href="Home.dc.html" style="min-height: 60px; padding: 0 16px; border-radius: 16px; background: #FFFFFF; border: 1.5px solid #5E8A6E; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #202722; font-size: 16px; font-weight: 600;">Without pilchards <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #174C35;">[N] recipes</span></a></li>
+        <li><a class="press" href="Home.dc.html" style="min-height: 60px; padding: 0 16px; border-radius: 16px; background: #FFFFFF; border: 1.5px solid #5E8A6E; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #202722; font-size: 16px; font-weight: 600;">Without oats <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #174C35;">[N] recipes</span></a></li>
+        <li><a class="press" href="Home.dc.html" style="min-height: 60px; padding: 0 16px; border-radius: 16px; background: #FFFFFF; border: 1.5px solid #5E8A6E; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #202722; font-size: 16px; font-weight: 600;">Without spinach <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #174C35;">[N] recipes</span></a></li>
+      </ul>
+      <p style="margin: 14px 0 0; font-size: 13px; color: #5B6A60;">[N] = the real count from the server. Order the rows by most recipes first.</p>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{isOffline}}" hint-placeholder-val="{{ false }}">
+    <section class="rise" aria-labelledby="o-h" style="margin-top: 22px;">
+      <div role="status" style="padding: 14px 16px; border-radius: 16px; background: #202722; color: #FFFFFF; display: flex; align-items: center; gap: 12px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9CDB6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M12 19h.01M3 3l18 18"></path></svg>
+        <p id="o-h" style="margin: 0; flex-grow: 1; font-size: 15px; font-weight: 600;">You are offline. Showing what is saved on your phone.</p>
+      </div>
+      <ul style="list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="padding: 14px; border-radius: 16px; background: #FFFFFF; display: flex; justify-content: space-between; font-size: 16px; font-weight: 600;">Milk <span style="font-size: 13px; color: #5B6A60;">Saved 2 h ago</span></li>
+        <li style="padding: 14px; border-radius: 16px; background: #FFFFFF; display: flex; justify-content: space-between; font-size: 16px; font-weight: 600;">Rolled oats <span style="font-size: 13px; color: #5B6A60;">Saved 2 h ago</span></li>
+        <li style="padding: 14px; border-radius: 16px; background: #FFFFFF; border: 1.5px dashed #8A5A00; display: flex; justify-content: space-between; font-size: 16px; font-weight: 600;">Lemons <span style="font-size: 13px; font-weight: 700; color: #8A5A00;">Waiting to sync</span></li>
+      </ul>
+      <p style="margin: 14px 0 0; font-size: 14px; line-height: 1.5; color: #5B6A60;">Changes you make now are kept and sent when you are back online. New recipes and search need a connection.</p>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{isError}}" hint-placeholder-val="{{ false }}">
+    <section class="rise" aria-labelledby="r-h" style="margin-top: 40px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+      <svg width="96" height="96" viewBox="0 0 120 120" fill="none" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#FBE3E1"></circle><path d="M60 36v30" stroke="#B3261E" stroke-width="7" stroke-linecap="round"></path><circle cx="60" cy="82" r="5" fill="#B3261E"></circle></svg>
+      <h2 id="r-h" role="alert" style="margin: 18px 0 0; font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 600;">We couldn&#39;t load your recipes</h2>
+      <p style="margin: 8px 12px 0; font-size: 16px; line-height: 1.5; color: #5B6A60;">Our server did not answer. Your pantry is safe. Try again in a moment.</p>
+      <button class="press" onClick="{{retry}}" style="margin-top: 22px; min-height: 52px; padding: 0 26px; border-radius: 16px; border: none; background: #174C35; color: #FFFFFF; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer;">Try again</button>
+      <p style="margin: 14px 0 0; font-size: 13px; color: #5B6A60;">Error code shown only to support: [REQUEST-ID]</p>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}">
+    <section aria-busy="true" aria-label="Loading recipes" style="margin-top: 22px; display: flex; flex-direction: column; gap: 14px;">
+      <div class="skel" style="height: 170px; border-radius: 22px;"></div>
+      <div class="skel" style="height: 18px; width: 70%; border-radius: 9px;"></div>
+      <div class="skel" style="height: 14px; width: 45%; border-radius: 7px;"></div>
+      <div class="skel" style="height: 170px; border-radius: 22px; margin-top: 8px;"></div>
+      <div class="skel" style="height: 18px; width: 60%; border-radius: 9px;"></div>
+      <p style="margin: 6px 0 0; font-size: 13px; color: #5B6A60;">Skeleton cards for lists. Waits longer than about 1 second on a full screen use the NutriTale loader.</p>
+    </section>
+  </sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cur = s.cur || 'Empty';
+    const base = 'flex-shrink: 0; min-height: 44px; padding: 0 16px; border-radius: 22px; font-family: DM Sans, sans-serif; font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer; ';
+    const tabs = ['Empty', 'No match', 'Offline', 'Error', 'Loading'].map((label) => {
+      const on = label === cur;
+      return { label, pressed: on ? 'true' : 'false', style: base + (on ? 'background: #174C35; color: #FFFFFF; border: 1.5px solid #174C35;' : 'background: #FFFFFF; color: #202722; border: 1.5px solid #5E8A6E;'), pick: () => this.setState({ cur: label }) };
+    });
+    return {
+      tabs,
+      isEmpty: cur === 'Empty', isNoMatch: cur === 'No match', isOffline: cur === 'Offline', isError: cur === 'Error', isLoading: cur === 'Loading',
+      retry: () => this.setState({ cur: 'Loading' })
+    };
+  }
+}
+</script>
+</body>
+</html>
