@@ -13,14 +13,12 @@ Label every line you add: **Checked** (name the source), **Estimate**, or **UNKN
 ### MongoDB Atlas — Checked (read-only, through the MongoDB Atlas connection in the planning session)
 | Item | Seen |
 |---|---|
-| Project | One project, "Project 0" |
-| Cluster | `Varr1ck`, free tier, AWS, region af-south-1 (Cape Town) |
-| MongoDB version | 8.0.39 |
-| State | Running (IDLE) |
-| Databases | `sample_mflix` (Atlas sample data), plus the system databases `admin` and `local` |
-| Food data | None yet |
-| Database users | UNKNOWN. Not listed. The connection string seen has no username or password. |
-| Network access list | UNKNOWN. Not inspected. |
+| Projects | Two, in one Atlas organisation: "Project 0" (created 22 Nov 03:59) and **"Nutritale"** (created 22 Nov 05:23). The master prompt says one primary database, so "Nutritale" is the one to use. |
+| Cluster in "Nutritale" | `Nutritale`, free tier, AWS, af-south-1 (Cape Town), MongoDB 8.0.39, running (IDLE) |
+| Databases in "Nutritale" | Only the system databases `admin` and `local`. No application data yet. |
+| Old cluster in "Project 0" | `Varr1ck`, free tier, only the `sample_mflix` sample data. Unused. Leave it or delete it: the owner's choice. |
+| Database users in "Nutritale" | One: an owner-level admin user (`atlasAdmin` on `admin`). Too powerful for an app. See `SECURITY_AUDIT.md`. |
+| Network access list in "Nutritale" | One entry: a single IP address (/32), created by Atlas auto setup. Not open to everyone. A server will need its own entry. |
 | Backups, transaction support, free-tier limits | UNKNOWN. Check Atlas docs for the free tier before relying on any. |
 
 Nothing was created, changed or deleted on the cluster.

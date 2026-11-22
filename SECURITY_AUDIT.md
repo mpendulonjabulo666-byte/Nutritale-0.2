@@ -16,9 +16,10 @@ Rules for this file:
 
 | Area | State |
 |---|---|
-| Atlas cluster | Free tier, Cape Town. Only sample data. Seen read-only. |
-| Atlas database users | UNKNOWN |
-| Atlas network access list | UNKNOWN |
+| Atlas cluster | Checked 22 Nov 2026 (read-only). Project "Nutritale", cluster `Nutritale`, free tier, Cape Town, empty (system databases only). An older project "Project 0" holds an unused sample-data cluster. |
+| Atlas database users | Checked 22 Nov 2026: one user with the owner-level `atlasAdmin` role. **Finding:** the app must not use it. Create a separate user with readWrite on the app database only. |
+| Atlas network access list | Checked 22 Nov 2026: one single-IP entry (from Atlas auto setup), nothing open to everyone. Home and mobile IPs change, so the owner's own access may break. A server needs its own entry. |
+| Postman | Checked 22 Nov 2026: still not reachable from the planning session (no Postman tool, no Postman CLI installed there). Inspect it from the owner's terminal. |
 | Atlas backups and encryption settings | UNKNOWN. Check the free-tier terms. |
 | Postman workspace | UNKNOWN. Not inspected yet. |
 | Repository visibility | Public. Secrets must never be committed. |
