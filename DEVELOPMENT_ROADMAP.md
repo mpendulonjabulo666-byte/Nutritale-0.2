@@ -21,12 +21,12 @@ Working rules for every phase:
 | D4 | Chat model provider and monthly cost limit | OPEN. Pricing not checked. |
 | D5 | Map provider (start with opening Apple Maps and Google Maps) | OPEN. Pricing not checked. |
 | D6 | Subscription billing route for the store apps (direct Apple and Google billing, or a billing service) | OPEN. Rules per region now in `docs/DESIGN_BRIEF.md` section 5.5. In-app purchase is required on iPhone so web subscribers can unlock Premium. |
-| D7 | Who owns the product, the code and the store accounts (owner, or Miss Mvula's business) | OPEN |
+| D7 | Who owns the product, the code and the store accounts | **Decided 22 Nov 2026:** a registered company owns NutriTale and receives the revenue. Its owner is the authorised merchant representative (identity, company and bank checks for every payment provider and for the Apple and Google developer accounts). Varrick is the developer and integrator: he builds checkout, webhooks and tests, and never holds the company's secret keys in the app. Company name and type ((Pty) Ltd or other): CONFIRM?. |
 | D8 | Open Food Facts terms: attribution and share-alike duties | OPEN. Read their terms of use. |
 | D9 | Web framework details and package manager | OPEN. Mobile stack proposed in `docs/DESIGN_BRIEF.md` section 6.3 (Expo SDK 58, Reanimated 4, React Native Reusables + NativeWind). |
 | D10 | Server-side search engine for the catalogue (Atlas Search or an alias collection) | OPEN |
 | D12 | First launch markets (the app is international) | **Decided 22 Nov 2026:** 1 South Africa, 2 United Kingdom, 3 United States. Country data (ingredient names, allergens, currency, units) is per market, so a new country is data, not a rebuild. |
-| D13 | Web payment provider for foreign currencies (SA seller) | **Owner's choice 22 Nov 2026: Paddle, pending verification.** PayFast stays for ZAR. Open questions for Paddle (sole trader vs company, payouts to SA, product acceptance) in `docs/research/paddle_verification.md`. |
+| D13 | Web payment provider for foreign currencies | OPEN. PayFast stays for ZAR. Shortlist to contact, in the company's name: FastSpring, 2Checkout (Verifone), Paddle, Peach Payments, Dodo Payments. Facts gathered so far are in `docs/research/paddle_verification.md`; facts about the others came from another chat and are UNVERIFIED. Choose only after written answers from the providers. |
 | D11 | Photo source and licences for launch | OPEN. The four legacy photos in the prototype have no licence on record. |
 
 ## Current priorities (owner, 22 Nov 2026)

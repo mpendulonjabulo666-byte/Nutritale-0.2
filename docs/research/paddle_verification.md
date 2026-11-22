@@ -14,7 +14,7 @@ Question from the owner (decision D13): can Paddle take USD and GBP website paym
 
 ## Verdict
 Paddle stays the preferred provider for USD and GBP **pending three answers that only Paddle can give**. Ask Paddle sales or support before building:
-1. Can a South African sole trader sign up, or do we need a registered company (Pty Ltd)?
+1. Answered by the owner on 22 Nov 2026: NutriTale belongs to a registered company, so apply as that company. Still ask Paddle to confirm it onboards a South African company.
 2. How and in which currency do payouts reach a South African bank, and at what cost?
 3. Is a recipe and pantry software subscription with no diet or medical claims accepted?
 
@@ -22,3 +22,6 @@ PayFast stays for South African website payments (ZAR) while Miss Mvula's verifi
 
 ## Risk to note
 The legacy NutriTale app has a hormone-supportive eating guide. If that idea moves into the new app, word it as general information ("supports", never "treats") and keep it out of anything sold through Paddle, because Paddle bans "advice (e.g., weight loss, muscle building)".
+
+## Update, 22 Nov 2026: Paddle is not ruled out
+Another chat suggested dropping Paddle because it would force NutriTale to remove features. The Paddle page read above does not say that. It bans **medical advice** (its example: "weight loss, muscle building") and physical goods. Recipes, pantry tracking, search, shopping lists, general nutrition values with a source, and AI recipe features are not on its list. Paddle stays on the shortlist next to FastSpring, 2Checkout, Peach Payments and Dodo Payments. Ask every provider the same questions in writing.
