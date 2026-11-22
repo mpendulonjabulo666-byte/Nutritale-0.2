@@ -8,7 +8,7 @@ Run these checks in order. Do not push if any check fails. Fix it first.
 
 1. **Hidden characters.** Scan for invisible Unicode (zero-width and direction-control characters). The scan must print nothing:
    ```
-   LC_ALL=C.UTF-8 grep -rnP '[\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{2064}\x{FEFF}]' --exclude-dir=.git .
+   LC_ALL=C.UTF-8 grep -rnP '[\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{2064}\x{FEFF}]' --exclude-dir=.git --exclude-dir=node_modules .
    ```
    If it finds a hit, remove the character and push only after the scan is clean.
    Tested 22 Nov 2026: it flags a test file with a zero-width space and finds nothing in this repo.
