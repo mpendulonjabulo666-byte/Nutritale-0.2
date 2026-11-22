@@ -1,4 +1,5 @@
 import { BookOpen, Search, ShoppingBasket } from "lucide-react";
+import SlideTextButton from "@/components/kokonutui/slide-text-button";
 import { RiseIn } from "@/components/rise-in";
 
 const features = [
@@ -19,17 +20,18 @@ export default function Landing() {
         <p className="mt-4 max-w-xl text-[17px] leading-7 text-charcoal">
           NutriTale matches recipes to your pantry, warns you what to use soon, and builds your shopping list.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <a
-            href="#"
-            aria-disabled="true"
-            className="inline-flex min-h-[52px] items-center rounded-2xl bg-forest px-6 text-[17px] font-semibold text-white transition-transform duration-150 ease-brand active:scale-[0.97]"
-          >
-            Coming soon
-          </a>
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          {/* Kokonut UI slide-text-button, restyled with brand tokens: 52px tall (44px minimum), forest, 17px label. */}
+          <SlideTextButton
+            href="#features"
+            text="See what it does"
+            hoverText="Search · Cook · Shop"
+            className="h-[52px] rounded-2xl bg-forest px-6 text-[17px] font-semibold tracking-normal text-white hover:bg-forest/90 focus-visible:outline-forest"
+          />
+          <span className="font-numeric text-[13px] font-semibold uppercase tracking-[0.08em] text-muted">Coming soon</span>
         </div>
       </RiseIn>
-      <ul className="grid gap-4 sm:grid-cols-3">
+      <ul id="features" className="grid scroll-mt-8 gap-4 sm:grid-cols-3">
         {features.map(({ Icon, title, body }, i) => (
           <li key={title}>
             <RiseIn index={i + 1}>
