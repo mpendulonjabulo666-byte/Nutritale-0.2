@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@/components/button';
 import { RiseIn } from '@/components/rise-in';
-import { colors, displayFont, roles, spacing } from '@/theme';
+import { colors, fonts, roles, spacing } from '@/theme';
 
 /** Public, signed-out entry. Sign-out always returns here. Sign-in and register screens are not built yet. */
 export default function Welcome() {
@@ -39,7 +39,7 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: roles.background, paddingHorizontal: spacing.screenSide, paddingBottom: spacing.xxl },
   hero: { flex: 1, justifyContent: 'center', gap: spacing.lg },
-  brand: { fontSize: 36, fontWeight: '600', color: colors.forest, fontFamily: displayFont },
-  tagline: { fontSize: 17, lineHeight: 26, color: roles.text },
+  brand: { fontSize: 36, color: colors.forest, fontFamily: fonts.display },
+  tagline: { fontSize: 17, lineHeight: 26, color: roles.text, fontFamily: fonts.body },
   actions: { gap: spacing.md },
 });

@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { BookOpen, Compass, House, ShoppingBasket, UserRound, type LucideIcon } from 'lucide-react-native';
-import { colors, radius, roles, spacing } from '@/theme';
+import { colors, fonts, radius, roles, spacing } from '@/theme';
 
 type TabDef = { name: string; title: string; Icon: LucideIcon };
 
@@ -27,7 +27,7 @@ export default function TabsLayout() {
         tabBarActiveTintColor: colors.forest,
         tabBarInactiveTintColor: roles.textSecondary,
         tabBarActiveBackgroundColor: colors.mint,
-        tabBarLabelStyle: { fontSize: 13, fontWeight: '600' },
+        tabBarLabelStyle: { fontSize: 13, fontFamily: fonts.bodySemibold },
         tabBarItemStyle: { minWidth: 58, minHeight: 60, borderRadius: radius.chip, marginHorizontal: 2, marginVertical: 6 },
         tabBarStyle: {
           backgroundColor: colors.white,

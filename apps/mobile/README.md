@@ -35,11 +35,27 @@ npm install lucide-react-native -w @nutritale/mobile
 | react-native-svg | 15.16.0 |
 | lucide-react-native | ^1.77.0 |
 
-## React Native Reusables + NativeWind: UNVERIFIED, not installed
-The task said to add them only if their current official docs give a working setup for Expo SDK 58.
-On 22 Nov 2026 `reactnativereusables.com/docs/installation` returned only page metadata (no steps), and the repo README
-(`founded-labs/react-native-reusables`) points to the docs with no command or SDK version. No SDK 58 setup could be
-verified, so both were skipped. Check the docs again before job J03.
+## Brand fonts: DONE (job J03b, 22 Nov 2026)
+Installed with `npx expo install @expo-google-fonts/playfair-display @expo-google-fonts/dm-sans @expo-google-fonts/space-grotesk`
+(0.4.2, 0.4.2, 0.4.1; packages MIT, fonts SIL OFL 1.1; no install scripts). `expo-font` was already in the template.
+
+- `src/theme/fonts.ts` imports only the weights the brief uses, through per-weight subpaths: Playfair Display 600, DM Sans
+  400/500/600/700, Space Grotesk 500/600. The Android bundle carries exactly these 7 files (about 590 KB).
+- `src/app/_layout.tsx` loads them with `useFonts` and keeps the splash screen up until they are ready. If loading fails,
+  the app opens with system fonts and logs a warning instead of staying on the splash screen.
+- Use `fonts.display`, `fonts.body`, `fonts.bodySemibold`, `fonts.numeric` and so on in styles. In React Native each weight is
+  its own family, so do not also set `fontWeight`.
+
+## React Native Reusables + NativeWind: UNABLE (re-checked 22 Nov 2026, job J03b)
+The rule was to install them only if their official docs show a working setup for Expo SDK 58. They do not:
+- NativeWind docs: "Nativewind 4.2.7 is the stable release and uses Tailwind CSS v3", and "Nativewind v4.2.7 adds Expo SDK 57
+  support". The v5 line is a release candidate ("not intended for production use"), and its tested target is "Expo 57.0.22,
+  React Native 0.86.3". No page mentions SDK 58 or React Native 0.88. (nativewind.dev/docs/getting-started/installation,
+  nativewind.dev/v5/getting-started/installation, github.com/nativewind/nativewind/releases)
+- Stable NativeWind needs Tailwind 3, but `apps/web` uses Tailwind 4.3 in the same npm workspace; v5 pins Tailwind 4.1.12.
+- `reactnativereusables.com/docs/installation` still renders no install steps (JavaScript-only page), and the GitHub README
+  gives no command or SDK version.
+Screens are built with `StyleSheet` and the shared tokens instead. Check again when NativeWind lists SDK 58.
 
 ## What is here
 - `src/app/index.tsx`: redirects to `/welcome` (no auth yet, so everyone is signed out).
@@ -49,7 +65,6 @@ verified, so both were skipped. Check the docs again before job J03.
 - Reduced motion: `ReducedMotionConfig mode={ReduceMotion.System}` in the root layout, plus `useReduceMotion()` (live `AccessibilityInfo` listener). With it on, `RiseIn` and the button press scale do not animate.
 
 ## Not done yet
-- Brand fonts (Playfair Display, DM Sans, Space Grotesk) are not loaded. A system serif stands in for headings.
 - The floating custom tab bar from the prototype (J03). The standard Expo Router tab bar is styled with the tokens for now.
 - No run on a phone or emulator. Checked only with `tsc --noEmit` and `npx expo export --platform android` (Metro bundle).
 

@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import Animated, { ReduceMotion, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { pressScale } from '@nutritale/shared';
 import { useReduceMotion } from '@/hooks/use-reduce-motion';
-import { colors, duration, radius, roles } from '@/theme';
+import { colors, duration, fonts, radius, roles } from '@/theme';
 
 type Props = {
   label: string;
@@ -41,5 +41,5 @@ const styles = StyleSheet.create({
   base: { minHeight: 52, borderRadius: radius.button, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
   primary: { backgroundColor: colors.forest },
   secondary: { backgroundColor: colors.white, borderWidth: 1.5, borderColor: colors.sageDeep },
-  text: { fontSize: 17, fontWeight: '600' },
+  text: { fontSize: 17, fontFamily: fonts.bodySemibold },
 });
