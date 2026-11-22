@@ -2,7 +2,7 @@
 
 MongoDB, API security and Postman test results.
 
-**Status: NOT STARTED.** Nothing has been tested. Every result below is NOT RUN. Do not change a result unless you ran the check in the current session and can quote the output.
+**Status: STARTED 22 Nov 2026.** Only the API skeleton's middleware (`apps/api`, no routes besides `/health`, no database, no accounts) was checked, locally. Every other result below is NOT RUN. Do not change a result unless you ran the check in the current session and can quote the output.
 
 Rules for this file:
 1. HTTP 200 does not mean secure. A secure endpoint also refuses the wrong caller, the wrong data and too many requests.
@@ -50,15 +50,35 @@ Rules for this file:
 | Ownership checks (no insecure direct object references) | NOT STARTED | NOT RUN |
 | Premium entitlement checked on the server | NOT STARTED | NOT RUN |
 | Input validation on every endpoint (shared schemas) | NOT STARTED | NOT RUN |
-| Rate limiting (login, reset, chat, import) | NOT STARTED | NOT RUN |
-| Request size limits | NOT STARTED | NOT RUN |
-| CORS limited to known origins | NOT STARTED | NOT RUN |
-| Secure HTTP headers | NOT STARTED | NOT RUN |
-| Error responses leak no internals | NOT STARTED | NOT RUN |
+| Rate limiting (login, reset, chat, import) | Global limit only (`express-rate-limit`, per IP). Per-route limits NOT STARTED (no such routes yet). | Global: PASS, 22 Nov 2026 (see 3.1). Per-route: NOT RUN |
+| Request size limits | Built (`express.json` limit from `JSON_BODY_LIMIT`) | PASS, 22 Nov 2026 (see 3.1) |
+| CORS limited to known origins | Built (allow-list from `CORS_ORIGINS`) | PASS, 22 Nov 2026 (see 3.1) |
+| Secure HTTP headers | Built (`helmet`, `x-powered-by` off) | PASS, 22 Nov 2026 (see 3.1) |
+| Error responses leak no internals | Built (central error handler) | PASS for 400, 404, 413, 22 Nov 2026 (see 3.1). 429 body is plain text (finding S2). |
 | Audit log for sensitive actions | NOT STARTED | NOT RUN |
 | HTTPS only in production | NOT STARTED | NOT RUN |
 | Food chat limited to food topics, with a general-information health note | NOT STARTED | NOT RUN |
 | Agent (Vex) access through typed tools with their own permissions | NOT STARTED | NOT RUN |
+
+### 3.1 Evidence: local probe of the API skeleton, 22 Nov 2026
+Method: a script called `createApp(loadEnv({...}))` from `apps/api/src`, listened on a random local port and sent real HTTP requests with `fetch` (Node 24.19.0). Test values only: `CORS_ORIGINS=http://localhost:3000`, `JSON_BODY_LIMIT=1kb`, rate limit per 60 s. Not Postman (the Postman connection failed in this session). Two runs: run 1 with `RATE_LIMIT_MAX=5` gave every line below except the 413 and rate-limit lines; run 2 with `RATE_LIMIT_MAX=7` gave those two (in run 1 the limit was reached before the oversized-body request). The rate-limit line's label comes from the script; in run 2 the 429 started at request 8, i.e. after 7 allowed requests, with a different spoofed `X-Forwarded-For` on each. Output lines (CSP shortened with `...`):
+```
+PASS  GET /health 200  [200]
+PASS  no x-powered-by
+PASS  helmet header content-security-policy  [default-src 'self';base-uri 'self';...;object-src 'none';script-src 'self';...]
+PASS  helmet header strict-transport-security  [max-age=31536000; includeSubDomains]
+PASS  helmet header x-content-type-options  [nosniff]
+PASS  helmet header x-frame-options  [SAMEORIGIN]
+PASS  helmet header referrer-policy  [no-referrer]
+PASS  unknown route 404 JSON  [{"error":{"code":"not_found","message":"Route not found"}}]
+PASS  allowed origin gets CORS header  [http://localhost:3000]
+PASS  other origin gets no CORS header  [none]
+PASS  malformed JSON -> 400, no stack  [400 {"error":{"code":"request_error","message":"Bad request"}}]
+PASS  oversized body -> 413  [413 {"error":{"code":"request_error","message":"Request body too large"}}]
+PASS  rate limit hits 429 by request 6, even with spoofed X-Forwarded-For  [200,429,429,429]
+```
+With `RATE_LIMIT_MAX=5` the same run returned `429 Too many requests, please try again later.` as plain text (finding S2). Invalid `PORT=0` stopped start-up with `Invalid environment: PORT: Too small: expected number to be >=1`, naming the variable and not printing values.
+Unit tests: `npm test -w @nutritale/api` → `Tests 12 passed (12)`.
 
 ## 4. Postman test matrix
 Ten collections, each protected endpoint run through the twelve cases below. Fill the table with PASS, FAIL or NOT RUN and the evidence (request name and the response line).
@@ -95,7 +115,13 @@ Cases for every protected endpoint:
 ## 5. Findings log
 | ID | Severity | What | Where | Fixed | Re-tested |
 |---|---|---|---|---|---|
-| (none yet) | | | | | |
+| S1 | Medium (before any deployment) | No `trust proxy` setting. Behind a hosting proxy every user would share the proxy's IP, so one busy user could rate-limit everyone. Set `app.set('trust proxy', <exact hop count>)` for the chosen host; never `true`. Spoofed `X-Forwarded-For` is ignored today (probe 3.1). | `apps/api/src/app.ts` | No | No |
+| S2 | Low | The 429 response is plain text, not the API's JSON error format. Clients that parse JSON errors will fail on it. Fix: give `rateLimit` a `handler` that sends `{ error: { code: 'rate_limited', ... } }`. | `apps/api/src/app.ts` | No | No |
+| S3 | Low (build tooling, not shipped to users) | `npm audit`, 22 Nov 2026: "3 moderate severity vulnerabilities", minimatch 7.0.0 - 11.0.0 (GHSA-g3hv-75wg-m249) through `@expo/fingerprint` in `expo`. The offered fix ("Will install expo@52.0.49, which is a breaking change") would downgrade Expo. Do not apply; wait for an Expo patch. | `apps/mobile` dependencies | No | No |
 
 ## 6. What was NOT checked
 (the audit must list this at the end)
+- Authentication of any kind: no accounts, tokens or login routes exist yet (Phase 1). Nothing to test.
+- Postman collections: the Postman connection failed in this session; none exist in the repo.
+- MongoDB connection with `nutritale_app`: the API does not connect yet.
+- HTTPS and production settings: nothing is deployed.

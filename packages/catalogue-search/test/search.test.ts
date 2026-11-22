@@ -7,7 +7,7 @@ import {
   seedCatalogue as catalogue,
   substitutesFor,
   type Ingredient,
-} from '../src/index.js';
+} from '../src/index';
 
 const za = { locale: 'en-ZA', catalogue } as const;
 const us = { locale: 'en-US', catalogue } as const;

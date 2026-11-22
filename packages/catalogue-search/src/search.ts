@@ -1,4 +1,4 @@
-import { editDistance, fuzzyThreshold, letters, normalise } from './normalise.js';
+import { editDistance, fuzzyThreshold, letters, normalise } from './normalise';
 import type {
   Catalogue,
   Ingredient,
@@ -8,7 +8,7 @@ import type {
   SearchResponse,
   SearchResult,
   SubstituteResult,
-} from './types.js';
+} from './types';
 
 export const DEFAULT_LIMIT = 8;
 const MAX_SUGGESTIONS = 3;

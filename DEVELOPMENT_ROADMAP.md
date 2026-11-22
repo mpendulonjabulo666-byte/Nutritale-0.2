@@ -25,8 +25,8 @@ Working rules for every phase:
 | D8 | Open Food Facts terms: attribution and share-alike duties | OPEN. Read their terms of use. |
 | D9 | Web framework details and package manager | OPEN. Mobile stack proposed in `docs/DESIGN_BRIEF.md` section 6.3 (Expo SDK 58, Reanimated 4, React Native Reusables + NativeWind). |
 | D10 | Server-side search engine for the catalogue (Atlas Search or an alias collection) | OPEN |
-| D12 | First launch markets (the app is international) | OPEN. Research inference: South Africa first, then the UK or US; hold the EU because of VAT and claim rules. See `docs/research/international_launch_rules.md`. |
-| D13 | Web payment provider for foreign currencies (SA seller) | OPEN. PayFast and Paystack confirmed for ZAR; Paddle and Stripe not confirmed for SA sellers; Lemon Squeezy closing 31 Mar 2027. |
+| D12 | First launch markets (the app is international) | **Decided 22 Nov 2026:** 1 South Africa, 2 United Kingdom, 3 United States. Country settings live in `packages/markets` so that adding a country is data only. |
+| D13 | Web payment provider for foreign currencies (SA seller) | **Direction decided 22 Nov 2026, verification in progress:** Paddle preferred for USD and GBP website payments; PayFast stays for ZAR website payments while Miss Mvula's verification completes; Apple and Google billing stay per their regional rules. Paddle checks so far are in `docs/research/international_launch_rules.md` (Q4 addendum). Still open: Paddle's own approval of NutriTale (medical-advice category in its policy), ZAR as a price currency, and yearly billing. No payment code is written: subscriptions are out of V1 (D2). |
 | D11 | Photo source and licences for launch | OPEN. The four legacy photos in the prototype have no licence on record. |
 
 ## Phase 0 — Audit and setup
@@ -101,3 +101,7 @@ Legacy NutriTale still has open items that earn or protect money. They continue 
 
 ## Not yet checked
 (list here anything a phase depends on that nobody has verified)
+- South Africa's R146 "common allergens" definition: only a secondary source was read (the official PDF is a scan). Needed before the SA launch. See `packages/markets/README.md`.
+- Whether Paddle accepts NutriTale's product: its policy bans "medical advice (e.g., weight loss, muscle building)". Ask Paddle with a product description before building anything on it.
+- The app on a physical phone (owner's job; nothing has run on a device yet).
+- `Intl` money formats on Hermes (phone) versus Node.

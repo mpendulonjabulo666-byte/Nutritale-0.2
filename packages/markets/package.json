@@ -1,0 +1,21 @@
+{
+  "name": "@nutritale/markets",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Country (market) settings for NutriTale: locale, currency, measurement units and the allergen list each country's label law names. Adding a country is a data change only.",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.1"
+  }
+}

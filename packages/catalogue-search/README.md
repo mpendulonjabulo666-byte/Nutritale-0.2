@@ -7,15 +7,18 @@ across countries: a user in en-US who types "cilantro" and a user in en-ZA who
 types "dhania" both reach the same ingredient, and each sees the name used
 where they live.
 
-Standalone package. It has no runtime dependencies and does not depend on the
-monorepo root.
+It has no runtime dependencies. It is an npm workspace of the monorepo, so
+install from the repository root.
 
 ```
-cd packages/catalogue-search
-npm install
-npm test          # vitest, prints the timing line
-npm run typecheck # tsc --noEmit, strict mode
+npm install                                   # from the repo root
+npm test -w @nutritale/catalogue-search       # vitest, prints the timing line
+npm run typecheck -w @nutritale/catalogue-search
 ```
+
+Relative imports have no file extension (`'./search'`, not `'./search.js'`).
+The Expo app's bundler (Metro) cannot resolve a `.js` import to a `.ts` file;
+with `.js` imports the Android bundle failed (checked 22 Nov 2026).
 
 ## API
 

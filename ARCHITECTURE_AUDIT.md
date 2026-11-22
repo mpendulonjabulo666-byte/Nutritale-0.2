@@ -64,7 +64,7 @@ The audit must confirm each row against the real code before any migration is wr
 ### 3.1 This repository
 - [ ] Contents and structure
 - [ ] Node, TypeScript and package manager versions chosen and pinned
-- [ ] Monorepo layout from the master prompt (`apps/mobile`, `apps/api`, `apps/web`, `packages/shared`) created
+- [x] Monorepo layout from the master prompt (`apps/mobile`, `apps/api`, `apps/web`, `packages/shared`) created. Checked 22 Nov 2026: present on `main`, typecheck passes in every workspace.
 
 ### 3.2 MongoDB
 - [ ] Database user for the app: least privilege, one database only
@@ -90,7 +90,22 @@ The audit must confirm each row against the real code before any migration is wr
 - [ ] Store requirements (Apple and Google): use the `app-store-ready` skill before submission
 
 ## 4. Findings and recommended changes
-(empty — to be filled by the audit)
+
+### Post-merge review of PRs #5, #6 and #4, 22 Nov 2026 — Checked (commands run in this session)
+All three were already merged into `main` (in the order #5, #6, #4) before this review.
+- **Checked:** `npm run typecheck` (all workspaces) exit 0; `npm run lint` exit 0 (mobile lint is still a stub that only prints a message); `npm test` exit 0 when run alone: api 12, catalogue-search 27, shared 15 passed.
+- **Checked, flaky:** when `npm test` ran at the same time as typecheck and audit, two tests failed: the catalogue timing test (`expected 561.9264000000003 to be less than 500`; 157-229 ms when run alone) and one API test. Both passed on re-run. Run tests on their own until the timing budget is made load-tolerant.
+- **Checked, fixed on branch `feat/markets-and-review-fixes`:** `@nutritale/catalogue-search` could not be bundled by the Expo app. Metro: `Unable to resolve module ./search.js from ...\packages\catalogue-search\src\index.ts`. Cause: `.js` suffixes on relative imports of `.ts` files. Fix: extensionless imports, as `@nutritale/shared` already uses. After the fix, `npx expo export --platform android` with a temporary import of the package succeeded, and the bundle contained the catalogue.
+- **Checked:** TypeScript versions differ: `typescript@5.9.3` in catalogue-search and web, `6.0.3` in api, mobile tooling and shared. Typecheck passes, but pick one version before adding more packages.
+- **Checked:** `packages/catalogue-search/package-lock.json` is a leftover from when the package was standalone. npm workspaces ignore it. Recommend deleting it (owner's call).
+- **Checked:** the root `package-lock.json` changed after `npm install` with npm 11.17.0: 27 `"peer": true` lines removed. Harmless; commit it with the next change so it stops showing as modified.
+- **Checked:** npm 11 warned that `esbuild@0.28.2` has an install script not covered by `allowScripts`. Tests and `tsx` still work.
+- **Checked:** `apps/api/.env` exists locally, is ignored by `.gitignore` and appears nowhere in git history. Its values were not read.
+- **Checked, open (data, US market):** in the seed, `Cake flour` is the en-ZA name of plain / all-purpose flour (correct for South Africa). A US user who searches "cake flour" is shown "All-purpose flour", but US cake flour is a different, low-protein product. Needs a way to mark a name as meaning something else in another country before the US launch.
+- **Checked, open (data, SA launch):** with the 44-item seed, "biltong", "boerewors", "chakalaka", "pap", "double cream" and "heavy cream" return `unknown`, and the nearest-name suggestions are unrelated (for "biltong": Bicarbonate of soda, Butter, Onion). The no-dead-end rule holds; the seed and the suggestion quality are the gap.
+
+### Added 22 Nov 2026
+- `packages/markets` (`@nutritale/markets`): country settings for ZA, GB and US (locale, currency, metric or US units, °C or °F, launch stage, allergen list with source and status). Tests: `Tests 17 passed (17)`. Android bundle with the package: succeeded.
 
 ## 5. What was NOT checked
 (the audit must list this at the end)

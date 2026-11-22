@@ -19,6 +19,8 @@ a professional, scalable, production-ready AI-powered food technology platform.
 | `apps/web` | Next.js 16 landing page (Tailwind v4, `motion`, lucide) |
 | `apps/api` | Express + TypeScript API skeleton (`/health`, env validation, security middleware). No database connected. |
 | `packages/shared` | `@nutritale/shared`: colour, type, shape and motion tokens, plus a WCAG contrast test |
+| `packages/catalogue-search` | `@nutritale/catalogue-search`: locale-aware ingredient search ("no dead end" ladder) with an en-ZA / en-GB / en-US seed |
+| `packages/markets` | `@nutritale/markets`: country settings (ZA, GB, US): locale, currency, units and each country's allergen list |
 
 Needs Node 20 or newer. From the repo root:
 ```

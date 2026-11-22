@@ -1,4 +1,4 @@
-import type { Ingredient } from '../types.js';
+import type { Ingredient } from '../types';
 
 /**
  * Seed catalogue: common ingredients with the names people actually use in
