@@ -16,3 +16,14 @@ coverage/
 # local files
 .DS_Store
 *.log
+
+# added by the monorepo scaffold (J01)
+*.tsbuildinfo
+out/
+web-build/
+expo-env.d.ts
+next-env.d.ts
+.vercel/
+.turbo/
+.metro-health-check*
+npm-debug.log*

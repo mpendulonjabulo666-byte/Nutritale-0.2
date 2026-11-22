@@ -12,4 +12,20 @@ a professional, scalable, production-ready AI-powered food technology platform.
 - `design/prototype/` — source of the clickable prototype (one file per screen)
 - `docs/AGENT_JOBS_V1.md` — build jobs for the owner's agents, and which UI library goes in the web app and which in the phone app
 
-Status (22 Nov 2026): planning and design. V1 scope decided. No app code yet. Audit results are filled in only where a check really ran.
+## Code (monorepo, npm workspaces)
+| Folder | What |
+|---|---|
+| `apps/mobile` | Expo SDK 58 app (Expo Router, five tabs, public `/welcome`) |
+| `apps/web` | Next.js 16 landing page (Tailwind v4, `motion`, lucide) |
+| `apps/api` | Express + TypeScript API skeleton (`/health`, env validation, security middleware). No database connected. |
+| `packages/shared` | `@nutritale/shared`: colour, type, shape and motion tokens, plus a WCAG contrast test |
+
+Needs Node 20 or newer. From the repo root:
+```
+npm install
+npm run typecheck
+npm test
+npm run lint
+```
+
+Status (22 Nov 2026): V1 scope decided. Monorepo scaffold added (jobs J01 to J04, see each app's README for what was and was not verified). Audit results are filled in only where a check really ran.

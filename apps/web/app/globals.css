@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/*
+ * Brand tokens. Values come from @nutritale/shared (set on <html> in app/layout.tsx),
+ * so web and mobile read one source. Tailwind v4 utilities: bg-forest, text-charcoal, etc.
+ */
+@theme inline {
+  --color-forest: var(--nt-forest);
+  --color-sage: var(--nt-sage);
+  --color-mint: var(--nt-mint);
+  --color-cream: var(--nt-cream);
+  --color-charcoal: var(--nt-charcoal);
+  --color-white: var(--nt-white);
+  --color-muted: var(--nt-muted);
+  --color-sage-deep: var(--nt-sageDeep);
+  --color-warn: var(--nt-warn);
+  --color-warn-fill: var(--nt-warnFill);
+  --color-alert: var(--nt-alert);
+  --color-alert-fill: var(--nt-alertFill);
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-numeric: var(--font-space-grotesk), ui-monospace, monospace;
+  --ease-brand: var(--nt-ease);
+}
+
+body {
+  background: var(--nt-cream);
+  color: var(--nt-charcoal);
+}
+
+/* Reduced motion: no movement anywhere (brief 6.2 rule 3). `motion` also honours it via MotionConfig. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
