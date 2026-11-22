@@ -59,7 +59,19 @@ Screens are built with `StyleSheet` and the shared tokens instead. Check again w
 
 ## What is here
 - `src/app/index.tsx`: redirects to `/welcome` (no auth yet, so everyone is signed out).
-- `src/app/welcome.tsx`: public signed-out entry. Sign-in and register are not built yet; the buttons open the tabs as a placeholder.
+- `src/app/welcome.tsx`, `sign-in.tsx`, `register.tsx` (job J06, PR 1): screens from `design/prototype/Main.dc.html`. Sign in
+  checks the email and password with the prototype's error wording, shows errors next to the field and announces them,
+  and has Show / Hide. Register is step 1 of 2 with the allergy question; its chips are the user's market list from
+  `@nutritale/markets` (South Africa until country detection exists). Accounts are not built: valid fields open the app,
+  and nothing is sent or stored. The owner's logo file is not in the repo, so Welcome shows a placeholder leaf mark.
+- `src/app/(tabs)/home.tsx` (job J06, PR 1): screen from `Home.dc.html`: greeting, search (opens Discover), "Use soon",
+  category chips, pantry-matched recipe cards with the match ring, pantry summary. Mock data in `src/data/mock.ts`.
+  Recipe photos show "Photo coming soon" because the legacy photos have no licence on record. Recipe cards are not
+  tappable yet (the recipe screen comes in a later PR).
+- `src/copy/en.ts`: interface text for the new screens (brief 1.1: no text in code). Older placeholder screens still have
+  text inline until they are rebuilt.
+- Checked 22 Nov 2026 in Expo web (desktop width): Welcome, Sign in (empty, bad-email and valid paths, Show/Hide),
+  Register (allergy chip toggle) and Home (rings fill, pantry card clears the tab bar).
 - `src/app/(tabs)/`: Home, Pantry, Discover, Shopping, Profile. Profile has "Sign out", which returns to `/welcome`.
 - `src/components/floating-tab-bar.tsx` (job J03c): the floating bar from `design/prototype/Home.dc.html`. White, 72 tall,
   radius 26, 12 from the sides, one soft forest shadow. Icon and label always visible; the active tab gets a mint pill

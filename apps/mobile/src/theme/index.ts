@@ -3,6 +3,7 @@ import { colors, duration, easing, radius, roles, shadow, spacing, stagger } fro
 
 export { colors, duration, radius, roles, spacing, stagger };
 export { fontAssets, fonts } from './fonts';
+export { text } from './text';
 
 /** Reanimated easing built from the shared cubic-bezier(.2,.8,.2,1). */
 export const enterEasing = Easing.bezier(...easing.standard);
