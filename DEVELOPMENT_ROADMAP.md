@@ -16,19 +16,24 @@ Working rules for every phase:
 | # | Decision | Status |
 |---|---|---|
 | D1 | Database | **Decided: MongoDB.** (Planning note: an earlier suggestion was PostgreSQL. The owner chose MongoDB.) |
-| D2 | First-release scope: which modules are in version 1 | OPEN |
+| D2 | First-release scope: which modules are in version 1 | **Decided 22 Nov 2026:** accounts, food catalogue and search, pantry, recipes, shopping list. Excluded: food chat, maps, planner, advanced admin and analytics, Vex, subscriptions. See `docs/DESIGN_BRIEF.md`. |
 | D3 | Target dates | OPEN |
 | D4 | Chat model provider and monthly cost limit | OPEN. Pricing not checked. |
 | D5 | Map provider (start with opening Apple Maps and Google Maps) | OPEN. Pricing not checked. |
 | D6 | Subscription billing route for the store apps (direct Apple and Google billing, or a billing service) | OPEN. Pricing not checked. |
 | D7 | Who owns the product, the code and the store accounts (owner, or Miss Mvula's business) | OPEN |
 | D8 | Open Food Facts terms: attribution and share-alike duties | OPEN. Read their terms of use. |
-| D9 | Web framework details and package manager | OPEN |
+| D9 | Web framework details and package manager | OPEN. Mobile stack proposed in `docs/DESIGN_BRIEF.md` section 6.3 (Expo SDK 58, Reanimated 4, React Native Reusables + NativeWind). |
+| D10 | Server-side search engine for the catalogue (Atlas Search or an alias collection) | OPEN |
+| D11 | Photo source and licences for launch | OPEN. The four legacy photos in the prototype have no licence on record. |
 
 ## Phase 0 — Audit and setup
+- [x] Least-privilege database user `nutritale_app` created (22 Nov 2026, readWrite on `nutritale`, one cluster)
+- [x] `.gitignore` for secrets and build output (merged 22 Nov 2026)
+- [x] Design brief and clickable prototype of the first six screens (`docs/DESIGN_BRIEF.md`, `design/prototype/`)
+- [ ] Owner reviews the prototype; draw error, empty and offline states; design Shopping and Profile
 - [ ] Inspect existing connections (MongoDB, Postman, repos). Report; do not ask to reconnect.
 - [ ] Fill `ARCHITECTURE_AUDIT.md` and `SECURITY_AUDIT.md` with real findings
-- [ ] Create a least-privilege database user (owner approves; password only in an env file)
 - [ ] Create the monorepo layout, strict TypeScript, linting, test runner
 - [ ] Draft the shared API contract and error format
 
@@ -52,8 +57,8 @@ Working rules for every phase:
 - [ ] Port recipe data and the healthy-only rule from legacy
 - [ ] Postman collections 3 and 5 passing
 
-## Phase 4 — Meal planner and shopping list
-- [ ] Weekly planner with budget
+## Phase 4 — Shopping list (planner NOT in V1)
+- [ ] Weekly planner with budget (later release)
 - [ ] Shopping list generated from the plan and the pantry
 - [ ] Postman collections 6 and 7 passing
 
@@ -64,7 +69,7 @@ Working rules for every phase:
 - [ ] Animations with reduced-motion support, tested on a low-end Android phone
 - [ ] Next.js web: landing page and signed-in pages
 
-## Phase 6 — Subscriptions and store readiness
+## Phase 6 — Store readiness (subscriptions NOT in V1)
 - [ ] One central "is Premium" record
 - [ ] Web payments through PayFast (account approval is outside the code)
 - [ ] Apple and Google billing for the store apps (D6)
@@ -72,13 +77,13 @@ Working rules for every phase:
 - [ ] Account deletion inside the app, privacy policy page, store listing material
 - [ ] Postman collection 9 passing
 
-## Phase 7 — Food chat, waste reminders, stores and maps
+## Phase 7 — Food chat, waste reminders, stores and maps (NOT in V1)
 - [ ] Food-only chat with saved and deletable conversations, health notes, general-information wording ("supports", never "treats")
 - [ ] Expiry reminders and push notifications
 - [ ] Nearby stores page: open Apple or Google Maps; "likely stocked", never "in stock"; list only verified shops
 - [ ] Postman collection 8 passing
 
-## Phase 8 — Admin, analytics and Vex
+## Phase 8 — Admin, analytics and Vex (NOT in V1)
 - [ ] Admin dashboard (users, recipes, catalogue, subscriptions, settings)
 - [ ] Typed Vex tools with their own permissions, rate limits and audit trail
 - [ ] Postman collection 10 passing

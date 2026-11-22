@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Pantry</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF8F1}
+a{color:#174C35}a:hover{color:#0F3624}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.row{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.qty{display:inline-block;animation:pop .25s ease}
+.press{transition:transform .15s ease,background-color .2s ease}
+.press:active{transform:scale(.94)}
+.scroller{scrollbar-width:none}.scroller::-webkit-scrollbar{display:none}
+a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAF8F1; color: #202722; font-family: 'DM Sans', system-ui, sans-serif;">
+<main style="height: 844px; overflow-y: auto; box-sizing: border-box; padding: 0 0 180px; scroll-padding-bottom: 180px;">
+
+  <header style="position: relative; height: 190px; overflow: hidden;">
+    <img src="/_blob/47fe8683e2fbb965d0edc64f67e438a0" alt="" style="width: 100%; height: 190px; object-fit: cover; display: block;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(23,76,53,.35) 0%, rgba(23,76,53,.88) 100%);"></div>
+    <div class="rise" style="position: absolute; left: 22px; right: 22px; bottom: 20px; color: #FFFFFF;">
+      <p style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #EAF4ED;">{{countLabel}}</p>
+      <h1 style="margin: 4px 0 0; font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 600;">My Pantry</h1>
+    </div>
+  </header>
+
+  <nav class="scroller" aria-label="Pantry categories" style="display: flex; gap: 8px; overflow-x: auto; padding: 16px 22px 6px;">
+    <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+      <button class="press" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="{{c.style}}">{{c.label}}</button>
+    </sc-for>
+  </nav>
+
+  <ul aria-label="Pantry items" style="list-style: none; margin: 8px 0 0; padding: 0 22px; display: flex; flex-direction: column; gap: 10px;">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+      <li class="row" style="{{r.rowStyle}}">
+        <div style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px; background: #EAF4ED; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; color: #174C35;" aria-hidden="true">{{r.initial}}</div>
+        <div style="flex-grow: 1; min-width: 0;">
+          <p style="margin: 0; font-size: 16px; font-weight: 700;">{{r.name}}</p>
+          <p style="margin: 3px 0 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <span style="font-size: 13px; color: #5B6A60;">{{r.cat}}</span>
+            <span style="{{r.badgeStyle}}">{{r.badge}}</span>
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 2px;">
+          <button class="press" onClick="{{r.dec}}" aria-label="{{r.decLabel}}" style="width: 44px; height: 44px; border-radius: 14px; border: 1.5px solid #5E8A6E; background: #FFFFFF; color: #174C35; font-size: 22px; line-height: 1; cursor: pointer;">−</button>
+          <span aria-live="polite" style="min-width: 52px; text-align: center; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;"><span class="qty">{{r.qtyText}}</span></span>
+          <button class="press" onClick="{{r.inc}}" aria-label="{{r.incLabel}}" style="width: 44px; height: 44px; border-radius: 14px; border: none; background: #174C35; color: #FFFFFF; font-size: 22px; line-height: 1; cursor: pointer;">+</button>
+        </div>
+      </li>
+    </sc-for>
+  </ul>
+</main>
+
+<a class="press" href="Search.dc.html" style="position: absolute; right: 22px; bottom: 104px; height: 56px; padding: 0 22px; border-radius: 28px; background: #174C35; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; box-shadow: 0 12px 26px rgba(23,76,53,.32);">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add item</a>
+
+<nav aria-label="Main" style="position: absolute; left: 12px; right: 12px; bottom: 14px; height: 72px; border-radius: 26px; background: #FFFFFF; box-shadow: 0 10px 30px rgba(23,76,53,.16); display: flex; justify-content: space-around; align-items: center; padding: 0 4px;">
+  <a href="Home.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Home</a>
+  <a href="Pantry.dc.html" aria-current="page" style="min-width: 64px; height: 58px; border-radius: 18px; background: #EAF4ED; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #174C35; font-size: 12px; font-weight: 700;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v3H8z"></path><path d="M7 6h10l1 3v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9z"></path><path d="M6 12h12"></path></svg>Pantry</a>
+  <a href="Search.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg>Discover</a>
+  <a href="#shopping" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h14l-1.5 10.5a1 1 0 0 1-1 .5h-9a1 1 0 0 1-1-.5z"></path><path d="M9 9l3-5 3 5"></path></svg>Shopping</a>
+  <a href="#profile" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const items = [
+      { id: 'spinach', name: 'Spinach', cat: 'Produce', unit: 'bunch', qty: 1, step: 1, days: 3 },
+      { id: 'onion', name: 'Onions', cat: 'Produce', unit: '', qty: 4, step: 1, days: 14 },
+      { id: 'carrot', name: 'Carrots', cat: 'Produce', unit: '', qty: 6, step: 1, days: 10 },
+      { id: 'pepper', name: 'Red pepper', cat: 'Produce', unit: '', qty: 1, step: 1, days: 6 },
+      { id: 'milk', name: 'Milk', cat: 'Dairy and eggs', unit: 'L', qty: 1, step: 1, days: 2 },
+      { id: 'eggs', name: 'Eggs', cat: 'Dairy and eggs', unit: '', qty: 6, step: 1, days: 12 },
+      { id: 'oats', name: 'Rolled oats', cat: 'Grains', unit: 'g', qty: 500, step: 100, days: null },
+      { id: 'beans', name: 'Baked beans', cat: 'Tins', unit: 'tin', qty: 2, step: 1, days: null },
+      { id: 'tomato', name: 'Chopped tomatoes', cat: 'Tins', unit: 'tin', qty: 1, step: 1, days: null },
+      { id: 'chickpea', name: 'Chickpeas', cat: 'Tins', unit: 'tin', qty: 1, step: 1, days: null },
+      { id: 'curry', name: 'Curry powder', cat: 'Spices and more', unit: 'jar', qty: 1, step: 1, days: null },
+      { id: 'honey', name: 'Honey', cat: 'Spices and more', unit: 'jar', qty: 1, step: 1, days: null }
+    ];
+    const qty = s.qty || {};
+    const picked = s.cat || 'All';
+    const catNames = ['All', 'Use soon', 'Produce', 'Dairy and eggs', 'Grains', 'Tins', 'Spices and more'];
+    const chipBase = 'flex-shrink: 0; min-height: 44px; padding: 0 16px; border-radius: 22px; font-family: DM Sans, sans-serif; font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer; ';
+    const cats = catNames.map((label) => {
+      const on = label === picked;
+      return {
+        label, pressed: on ? 'true' : 'false',
+        style: chipBase + (on ? 'background: #174C35; color: #FFFFFF; border: 1.5px solid #174C35;' : 'background: #FFFFFF; color: #202722; border: 1.5px solid #5E8A6E;'),
+        pick: () => this.setState({ cat: label })
+      };
+    });
+    const set = (id, v) => this.setState({ qty: Object.assign({}, qty, { [id]: Math.max(0, v) }) });
+    const visible = items.filter((it) => picked === 'All' || it.cat === picked || (picked === 'Use soon' && it.days !== null && it.days <= 3));
+    const rows = visible.map((it) => {
+      const q = qty[it.id] !== undefined ? qty[it.id] : it.qty;
+      const out = q === 0;
+      const soon = it.days !== null && it.days <= 3;
+      let badge = it.days === null ? 'Long life' : 'Use in ' + it.days + ' days';
+      let badgeStyle = 'font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #EAF4ED; color: #174C35;';
+      if (soon) badgeStyle = 'font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #F6E7C8; color: #8A5A00;';
+      if (out) { badge = 'Out of stock'; badgeStyle = 'font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #FBE3E1; color: #B3261E;'; }
+      const unitText = it.unit ? (it.unit === 'g' || it.unit === 'L' ? it.unit : ' ' + it.unit + (q === 1 ? '' : 's')) : '';
+      return {
+        name: it.name, cat: it.cat, initial: it.name.charAt(0), badge, badgeStyle,
+        qtyText: q + unitText,
+        rowStyle: 'display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 18px; background: #FFFFFF; box-shadow: 0 4px 14px rgba(23,76,53,.06);' + (out ? ' opacity: 0.85;' : ''),
+        dec: () => set(it.id, q - it.step),
+        inc: () => set(it.id, q + it.step),
+        decLabel: 'Less ' + it.name,
+        incLabel: 'More ' + it.name
+      };
+    });
+    return { cats, rows, countLabel: items.length + ' items · 2 to use soon' };
+  }
+}
+</script>
+</body>
+</html>

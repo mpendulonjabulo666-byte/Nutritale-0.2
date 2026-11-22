@@ -1,0 +1,22 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-11-22T09:10:00+02:00"},
+  "title": "NutriTale V1 Prototype",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "1 · Welcome, sign in, register", "is_interactive": true, "radius": 36},
+    "Home.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "2 · Home", "is_interactive": true, "radius": 36},
+    "Pantry.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "3 · My Pantry", "is_interactive": true, "radius": 36},
+    "Search.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 844, "title": "4 · Ingredient search", "is_interactive": true, "radius": 36},
+    "DidYouMean.dc.html": {"x": 1880, "y": 0, "w": 390, "h": 844, "title": "5 · Did you mean + alternatives", "is_interactive": true, "radius": 36},
+    "Recipe.dc.html": {"x": 2350, "y": 0, "w": 390, "h": 844, "title": "6 · Recipe details", "is_interactive": true, "radius": 36},
+    "Loader.dc.html": {"x": 2820, "y": 0, "w": 390, "h": 844, "title": "Extra · NutriTale loader", "is_interactive": true, "radius": 36}
+  },
+  "order": ["Main.dc.html", "Home.dc.html", "Pantry.dc.html", "Search.dc.html", "DidYouMean.dc.html", "Recipe.dc.html", "Loader.dc.html"],
+  "notes": {
+    "title": {"x": 0, "y": -300, "text": "NutriTale V1 · first six screens", "kind": "title1", "maxW": 3210},
+    "readme": {"x": 3290, "y": 0, "w": 360, "fill": "green", "size": "s", "text": "How to use: press Play on Welcome and click through. Search: type dhania, brinjol, tomatos or chick peas.\n\nData: recipe names, ingredients and nutrition come from the legacy NutriTale seed file and are NOT yet verified.\n\nPhotos: from the legacy NutriTale repo. Licence for these files is not on record. Confirm or replace before any public use.\n\nShopping and Profile tabs are not designed yet."}
+  },
+  "designSystems": []
+}

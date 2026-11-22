@@ -17,7 +17,7 @@ Label every line you add: **Checked** (name the source), **Estimate**, or **UNKN
 | Cluster in "Nutritale" | `Nutritale`, free tier, AWS, af-south-1 (Cape Town), MongoDB 8.0.39, running (IDLE) |
 | Databases in "Nutritale" | Only the system databases `admin` and `local`. No application data yet. |
 | Old cluster in "Project 0" | `Varr1ck`, free tier, only the `sample_mflix` sample data. Unused. Leave it or delete it: the owner's choice. |
-| Database users in "Nutritale" | One: an owner-level admin user (`atlasAdmin` on `admin`). Too powerful for an app. See `SECURITY_AUDIT.md`. |
+| Database users in "Nutritale" | Two: the owner-level admin user (`atlasAdmin`, not for the app) and `nutritale_app` (`readWrite@nutritale`, one cluster, created 22 Nov 2026). |
 | Network access list in "Nutritale" | One entry: a single IP address (/32), created by Atlas auto setup. Not open to everyone. A server will need its own entry. |
 | Backups, transaction support, free-tier limits | UNKNOWN. Check Atlas docs for the free tier before relying on any. |
 
@@ -27,7 +27,7 @@ Nothing was created, changed or deleted on the cluster.
 The owner says Postman is connected. The planning session had no Postman tool, so its workspace, collections and environments have not been seen. The audit must inspect them first.
 
 ### This repository — Checked
-`Nutritale-0.2` has one commit and one file (`README.md`). There is no code yet. The repository is **public**, so never commit secrets, real keys or private data.
+Checked 22 Nov 2026: planning docs, `CLAUDE.md`, `.gitignore`, `docs/DESIGN_BRIEF.md` and the prototype source in `design/prototype/`. There is no app code yet. The repository is **public**, so never commit secrets, real keys or private data.
 
 ### Legacy NutriTale — from the planning conversation, not re-verified here
 - PHP 8 and MySQL, no framework. Live at nutritale.freedev.app on InfinityFree. Deployed by a GitHub Action over FTP from the `nutritale/` folder of `mpendulonjabulo666-byte/mpendulonjabulo666-byte.github.io`.

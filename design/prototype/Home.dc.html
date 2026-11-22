@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NutriTale home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Playfair+Display:wght@500;600;700&amp;family=Space+Grotesk:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF8F1}
+a{color:#174C35}a:hover{color:#0F3624}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes ring{from{stroke-dashoffset:100}}
+.rise{animation:rise .55s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}.d5{animation-delay:.3s}
+.ring{animation:ring 1s cubic-bezier(.2,.8,.2,1) .4s both}
+.press{transition:transform .15s ease,background-color .2s ease,box-shadow .2s ease}
+.press:active{transform:scale(.97)}
+.card{transition:transform .2s ease,box-shadow .2s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(23,76,53,.16)}
+.card img{transition:transform .5s ease}
+.card:hover img{transform:scale(1.04)}
+.scroller{scrollbar-width:none}.scroller::-webkit-scrollbar{display:none}
+a:focus-visible,button:focus-visible{outline:3px solid #174C35;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAF8F1; color: #202722; font-family: 'DM Sans', system-ui, sans-serif;">
+<main style="height: 844px; overflow-y: auto; box-sizing: border-box; padding: 52px 0 110px; scroll-padding-bottom: 110px;">
+
+  <header class="rise" style="display: flex; align-items: center; justify-content: space-between; padding: 0 22px;">
+    <div>
+      <p style="margin: 0; font-size: 14px; color: #5B6A60;">Good evening</p>
+      <h1 style="margin: 2px 0 0; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: #174C35;">What&#39;s cooking tonight?</h1>
+    </div>
+    <img src="/_blob/d6a0dfea2e7acc8364e9584936286cf1" alt="NutriTale" style="width: 64px; height: auto;">
+  </header>
+
+  <a class="press rise d1" href="Search.dc.html" style="margin: 18px 22px 0; height: 54px; border-radius: 16px; background: #FFFFFF; border: 1.5px solid #5E8A6E; display: flex; align-items: center; gap: 12px; padding: 0 16px; text-decoration: none; color: #5B6A60; box-shadow: 0 4px 14px rgba(23,76,53,.06);">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#174C35" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+    <span style="font-size: 16px;">Search an ingredient, e.g. dhania</span>
+  </a>
+
+  <section class="rise d2" aria-labelledby="soon-h" style="margin: 20px 22px 0; padding: 16px; border-radius: 20px; background: #F6E7C8; display: flex; align-items: center; gap: 14px;">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8A5A00" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2"></path><path d="M9 2h6"></path></svg>
+    <div style="flex-grow: 1;">
+      <h2 id="soon-h" style="margin: 0; font-size: 15px; font-weight: 700; color: #8A5A00;">Use soon</h2>
+      <p style="margin: 2px 0 0; font-size: 14px; color: #202722;">Milk in 2 days · Spinach in 3 days</p>
+    </div>
+    <a href="Pantry.dc.html" style="font-size: 14px; font-weight: 700; color: #8A5A00; padding: 12px 4px;">View</a>
+  </section>
+
+  <nav class="scroller rise d3" aria-label="Recipe categories" style="display: flex; gap: 8px; overflow-x: auto; padding: 22px 22px 4px;">
+    <sc-for list="{{chips}}" as="c" hint-placeholder-count="6">
+      <button class="press" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="{{c.style}}">{{c.label}}</button>
+    </sc-for>
+  </nav>
+
+  <section aria-labelledby="pantry-h" style="margin-top: 22px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 0 22px;">
+      <h2 id="pantry-h" style="margin: 0; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600;">Cook from your pantry</h2>
+      <a href="Search.dc.html" style="font-size: 14px; font-weight: 600; padding: 10px 0;">See all</a>
+    </div>
+    <div class="scroller" style="display: flex; gap: 14px; overflow-x: auto; padding: 12px 22px 16px;">
+
+      <a class="card rise d3" href="Recipe.dc.html" style="flex-shrink: 0; width: 250px; border-radius: 22px; background: #FFFFFF; overflow: hidden; text-decoration: none; color: #202722; box-shadow: 0 8px 22px rgba(23,76,53,.10);">
+        <div style="position: relative; height: 170px; overflow: hidden;">
+          <img src="/_blob/b33762010dc76b8f7327a4a75ab59cb7" alt="Bowl of oats topped with sliced almonds and honey" style="width: 100%; height: 170px; object-fit: cover; display: block;">
+          <span style="position: absolute; left: 12px; top: 12px; padding: 6px 10px; border-radius: 12px; background: #FFFFFF; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #174C35;">10 min + overnight</span>
+        </div>
+        <div style="padding: 14px 16px 16px; display: flex; gap: 12px; align-items: center;">
+          <div style="flex-grow: 1;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3;">Overnight Oats with Mixed Berries</h3>
+            <p style="margin: 4px 0 0; font-size: 13px; color: #5B6A60;">You have 3 of 5 · Vegetarian</p>
+          </div>
+          <svg width="46" height="46" viewBox="0 0 36 36" role="img" aria-label="60 percent of ingredients in your pantry"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#EAF4ED" stroke-width="4"></circle><circle class="ring" cx="18" cy="18" r="15.9" fill="none" stroke="#174C35" stroke-width="4" stroke-linecap="round" stroke-dasharray="60 100" pathLength="100" transform="rotate(-90 18 18)"></circle><text x="18" y="21.5" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="10" font-weight="600" fill="#174C35">3/5</text></svg>
+        </div>
+      </a>
+
+      <article class="card rise d4" style="flex-shrink: 0; width: 250px; border-radius: 22px; background: #FFFFFF; overflow: hidden; box-shadow: 0 8px 22px rgba(23,76,53,.10);">
+        <div style="position: relative; height: 170px; overflow: hidden;">
+          <img src="/_blob/484413ff10795bc7def9708f3cf4e443" alt="Vegetables tossed above a pan on a gas flame" style="width: 100%; height: 170px; object-fit: cover; display: block;">
+          <span style="position: absolute; left: 12px; top: 12px; padding: 6px 10px; border-radius: 12px; background: #FFFFFF; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; color: #174C35;">20 min</span>
+        </div>
+        <div style="padding: 14px 16px 16px; display: flex; gap: 12px; align-items: center;">
+          <div style="flex-grow: 1;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3;">Chickpea &amp; Vegetable Stir-Fry</h3>
+            <p style="margin: 4px 0 0; font-size: 13px; color: #5B6A60;">You have 4 of 6 · Vegan</p>
+          </div>
+          <svg width="46" height="46" viewBox="0 0 36 36" role="img" aria-label="67 percent of ingredients in your pantry"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#EAF4ED" stroke-width="4"></circle><circle class="ring" cx="18" cy="18" r="15.9" fill="none" stroke="#174C35" stroke-width="4" stroke-linecap="round" stroke-dasharray="67 100" pathLength="100" transform="rotate(-90 18 18)"></circle><text x="18" y="21.5" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="10" font-weight="600" fill="#174C35">4/6</text></svg>
+        </div>
+      </article>
+
+      <article class="card rise d5" style="flex-shrink: 0; width: 250px; border-radius: 22px; background: #FFFFFF; overflow: hidden; box-shadow: 0 8px 22px rgba(23,76,53,.10);">
+        <div style="height: 170px; background: #EAF4ED; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#5E8A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14z"></path><path d="M5 19L13 11"></path></svg>
+          <span style="font-size: 13px; color: #5B6A60;">Photo coming soon</span>
+        </div>
+        <div style="padding: 14px 16px 16px; display: flex; gap: 12px; align-items: center;">
+          <div style="flex-grow: 1;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3;">Chakalaka and Bean Stew</h3>
+            <p style="margin: 4px 0 0; font-size: 13px; color: #5B6A60;">You have 6 of 8 · Vegan</p>
+          </div>
+          <svg width="46" height="46" viewBox="0 0 36 36" role="img" aria-label="75 percent of ingredients in your pantry"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#EAF4ED" stroke-width="4"></circle><circle class="ring" cx="18" cy="18" r="15.9" fill="none" stroke="#174C35" stroke-width="4" stroke-linecap="round" stroke-dasharray="75 100" pathLength="100" transform="rotate(-90 18 18)"></circle><text x="18" y="21.5" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="10" font-weight="600" fill="#174C35">6/8</text></svg>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <a class="press rise d5" href="Pantry.dc.html" style="margin: 8px 22px 0; padding: 18px; border-radius: 20px; background: #174C35; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 16px; position: relative; overflow: hidden;">
+    <div style="flex-grow: 1;">
+      <p style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #A9CDB6;">My pantry</p>
+      <p style="margin: 6px 0 0; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; line-height: 1.25;">12 items · 2 to use soon</p>
+      <p style="margin: 6px 0 0; font-size: 14px; color: #EAF4ED;">Keep it up to date for better matches</p>
+    </div>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+  </a>
+</main>
+
+<nav aria-label="Main" style="position: absolute; left: 12px; right: 12px; bottom: 14px; height: 72px; border-radius: 26px; background: #FFFFFF; box-shadow: 0 10px 30px rgba(23,76,53,.16); display: flex; justify-content: space-around; align-items: center; padding: 0 4px;">
+  <a href="Home.dc.html" aria-current="page" style="min-width: 64px; height: 58px; border-radius: 18px; background: #EAF4ED; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #174C35; font-size: 12px; font-weight: 700;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Home</a>
+  <a href="Pantry.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v3H8z"></path><path d="M7 6h10l1 3v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9z"></path><path d="M6 12h12"></path></svg>Pantry</a>
+  <a href="Search.dc.html" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg>Discover</a>
+  <a href="#shopping" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h14l-1.5 10.5a1 1 0 0 1-1 .5h-9a1 1 0 0 1-1-.5z"></path><path d="M9 9l3-5 3 5"></path></svg>Shopping</a>
+  <a href="#profile" style="min-width: 60px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #5B6A60; font-size: 12px; font-weight: 600;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const picked = s.picked || 'For you';
+    const base = 'flex-shrink: 0; min-height: 44px; padding: 0 18px; border-radius: 22px; font-family: DM Sans, sans-serif; font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer; ';
+    const chips = ['For you', 'Breakfast', 'Under 20 min', 'Vegan', 'South African', 'Kids'].map((label) => {
+      const on = label === picked;
+      return {
+        label,
+        pressed: on ? 'true' : 'false',
+        style: base + (on ? 'background: #174C35; color: #FFFFFF; border: 1.5px solid #174C35;' : 'background: #FFFFFF; color: #202722; border: 1.5px solid #5E8A6E;'),
+        pick: () => this.setState({ picked: label })
+      };
+    });
+    return { chips };
+  }
+}
+</script>
+</body>
+</html>

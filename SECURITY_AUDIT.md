@@ -17,7 +17,7 @@ Rules for this file:
 | Area | State |
 |---|---|
 | Atlas cluster | Checked 22 Nov 2026 (read-only). Project "Nutritale", cluster `Nutritale`, free tier, Cape Town, empty (system databases only). An older project "Project 0" holds an unused sample-data cluster. |
-| Atlas database users | Checked 22 Nov 2026: one user with the owner-level `atlasAdmin` role. **Finding:** the app must not use it. Create a separate user with readWrite on the app database only. |
+| Atlas database users | Checked 22 Nov 2026: owner-level `atlasAdmin` user (not for the app), and `nutritale_app` created 22 Nov 2026 with `readWrite@nutritale` on one cluster (seen in the Atlas UI). Connection with this user NOT yet tested. Password is only in the owner's local `.env`. |
 | Atlas network access list | Checked 22 Nov 2026: one single-IP entry (from Atlas auto setup), nothing open to everyone. Home and mobile IPs change, so the owner's own access may break. A server needs its own entry. |
 | Postman | Checked 22 Nov 2026: still not reachable from the planning session (no Postman tool, no Postman CLI installed there). Inspect it from the owner's terminal. |
 | Atlas backups and encryption settings | UNKNOWN. Check the free-tier terms. |
@@ -26,7 +26,7 @@ Rules for this file:
 | Legacy NutriTale carry-over items to verify | Rotate any key that was ever exposed in chat or code; delete leftover test pages such as `t.php`; take a database export before any migration; keep PayFast merchant ID, key and passphrase only in `config.local.php`. |
 
 ## 2. MongoDB security checklist (all NOT STARTED)
-- [ ] App connects with its own least-privilege user (readWrite on one database only)
+- [ ] App connects with its own least-privilege user (readWrite on one database only). User exists; connection not tested yet.
 - [ ] Admin or Atlas-owner credentials never used by the app
 - [ ] Network access list has no allow-everyone entry
 - [ ] TLS in transit confirmed
