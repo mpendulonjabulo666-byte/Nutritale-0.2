@@ -79,7 +79,7 @@ The owner named Uber Eats, Duolingo and Yelp. We copy none of their screens. We 
 - The scroll area has bottom padding and `scroll-padding-bottom` so the bar never covers a focused item (WCAG 2.2, 2.4.11).
 - Signed-out users land on the public welcome screen, never straight on sign-in. Sign-out returns there.
 
-## 5. The first six screens (all in the prototype)
+## 5. The screens (all in the prototype)
 
 | # | Screen | Prototype file | What it must prove |
 |---|---|---|---|
@@ -89,6 +89,8 @@ The owner named Uber Eats, Duolingo and Yelp. We copy none of their screens. We 
 | 4 | Ingredient search | `Search.dc.html` | Live matching: exact, alias, prefix, contains, then fuzzy. Unknown words get "Add as my own item". |
 | 5 | Did you mean and swaps | `DidYouMean.dc.html` | Typo shown, best guess large, other names we understand, cooking swaps, add to shopping list. |
 | 6 | Recipe details | `Recipe.dc.html` | Photo, floating nutrition badges, allergen tag, have/missing list, "Add 2 missing to shopping list", method, nutrition marked "Estimated". |
+| 7 | Shopping list | `Shopping.dc.html` | Grouped list, real checkboxes, progress bar, add an item, remove, "All bought, move to pantry", empty state. |
+| 8 | Profile and settings | `Profile.dc.html` | Diet and allergy chips, people I cook for, reminders, data saver, reduce motion, privacy, delete account, sign out to the welcome screen. |
 | + | Loader | `Loader.dc.html` | Custom NutriTale loader: the book's pages turn while a sprout grows. No generic spinner. |
 
 ### 5.1 States every screen must have (not all are drawn yet)
@@ -176,7 +178,7 @@ Do not use Moti: last release January 2025, Reanimated 4 support UNVERIFIED.
 Method: code review of the seven prototype files, plus contrast calculations. **Not done:** screen reader testing, 200% font size test, testing on a real phone. Those happen on the built app.
 
 ### Summary
-Issues found: 10. Fixed in the prototype: 5. Open for the build: 5.
+Issues found: 10. Fixed in the prototype: 6. Open for the build: 4.
 
 | # | Issue | WCAG | Severity | Status |
 |---|---|---|---|---|
@@ -186,7 +188,7 @@ Issues found: 10. Fixed in the prototype: 5. Open for the build: 5.
 | 4 | Bottom bar could cover the focused item | 2.4.11 (2.2) | Major | FIXED: `scroll-padding-bottom` on scroll areas |
 | 5 | `sage` failed for text and borders on light backgrounds | 1.4.3, 1.4.11 | Critical | FIXED: `sageDeep` and `muted` added |
 | 6 | No error states drawn for sign-in and registration | 3.3.1 | Major | OPEN: draw them before the build |
-| 7 | Shopping and Profile tabs lead nowhere | 2.4.4 | Minor | OPEN: design these screens next |
+| 7 | Shopping and Profile tabs led nowhere | 2.4.4 | Minor | FIXED: both screens designed and linked |
 | 8 | Screens are fixed at 390 px; 200% text not tested | 1.4.4 | Major | OPEN: test in the build with system font size at maximum |
 | 9 | White text on the pantry photo header: contrast depends on the photo | 1.4.3 | Minor | OPEN: keep the dark overlay; check each real photo |
 | 10 | Some text links are 37 px tall ("Forgot password?", "See all") | 2.5.8 passes (24 px); 44 px is AAA | Minor | OPEN: raise to 44 px in the build |

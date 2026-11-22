@@ -10,5 +10,6 @@ a professional, scalable, production-ready AI-powered food technology platform.
 - `docs/DESIGN_BRIEF.md` — V1 scope, brand tokens, motion system, the six screens and the accessibility review
 - `docs/research/` — sourced research notes behind the design brief
 - `design/prototype/` — source of the clickable prototype (one file per screen)
+- `docs/AGENT_JOBS_V1.md` — build jobs for the owner's agents, and which UI library goes in the web app and which in the phone app
 
 Status (22 Nov 2026): planning and design. V1 scope decided. No app code yet. Audit results are filled in only where a check really ran.
