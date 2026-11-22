@@ -175,6 +175,17 @@ export const catalogue: Ingredient[] = [
     substitutes: [],
   },
   {
+    id: 'milk',
+    names: { '*': 'Milk' },
+    category: 'Dairy and eggs',
+    aliases: [
+      { locale: '*', term: 'full cream milk' },
+      { locale: '*', term: 'whole milk' },
+      { locale: 'en-GB', term: 'semi-skimmed milk' },
+    ],
+    substitutes: [{ id: 'plain-yoghurt', note: 'Thin with water for baking; it adds a mild tang.' }],
+  },
+  {
     id: 'butter',
     names: { '*': 'Butter' },
     category: 'Dairy and eggs',

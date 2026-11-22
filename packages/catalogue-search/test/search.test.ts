@@ -38,6 +38,12 @@ describe('normalise', () => {
 });
 
 describe('search ladder', () => {
+  it('milk is an exact match, not a buttermilk prefix hit', () => {
+    const r = search('milk', { locale: 'en-ZA', catalogue });
+    expect(r.status).toBe('exact');
+    expect(r.results[0]?.displayName).toBe('Milk');
+  });
+
   it('dhania reaches Coriander in en-ZA via an alias', () => {
     const r = search('dhania', za);
     expect(r.status).toBe('alias');
