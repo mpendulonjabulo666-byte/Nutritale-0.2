@@ -2,7 +2,9 @@ import { z } from 'zod';
 
 /**
  * Environment validation. Values come only from process.env (never hard-coded).
- * MONGODB_URI and MONGODB_DB are validated but the skeleton does not connect to a database yet.
+ * STORAGE picks the repositories: `mongo` (default) needs MONGODB_URI and MONGODB_DB;
+ * `memory` keeps everything in process memory (tests and local Postman runs only) and is
+ * refused when NODE_ENV=production.
  */
 const csv = z
   .string()
@@ -14,19 +16,40 @@ const csv = z
       .filter((item) => item.length > 0),
   );
 
-export const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().int().min(1).max(65535).default(4000),
-  MONGODB_URI: z
-    .string()
-    .min(1, 'MONGODB_URI is required')
-    .refine((value) => /^mongodb(\+srv)?:\/\//.test(value), 'MONGODB_URI must start with mongodb:// or mongodb+srv://'),
-  MONGODB_DB: z.string().min(1, 'MONGODB_DB is required'),
-  CORS_ORIGINS: csv,
-  RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(15 * 60 * 1000),
-  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
-  JSON_BODY_LIMIT: z.string().default('100kb'),
-});
+const positiveInt = z.coerce.number().int().positive();
+
+export const envSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    PORT: z.coerce.number().int().min(1).max(65535).default(4000),
+    STORAGE: z.enum(['mongo', 'memory']).default('mongo'),
+    MONGODB_URI: z
+      .string()
+      .min(1, 'MONGODB_URI is required')
+      .refine((value) => /^mongodb(\+srv)?:\/\//.test(value), 'MONGODB_URI must start with mongodb:// or mongodb+srv://')
+      .optional(),
+    MONGODB_DB: z.string().min(1, 'MONGODB_DB is required').optional(),
+    JWT_SECRET: z.string({ error: 'JWT_SECRET is required' }).min(32, 'JWT_SECRET must be at least 32 characters'),
+    CORS_ORIGINS: csv,
+    RATE_LIMIT_WINDOW_MS: positiveInt.default(15 * 60 * 1000),
+    RATE_LIMIT_MAX: positiveInt.default(300),
+    /** Tighter limit shared by POST /auth/register, /auth/login and /auth/refresh, per IP. */
+    AUTH_RATE_LIMIT_WINDOW_MS: positiveInt.default(15 * 60 * 1000),
+    AUTH_RATE_LIMIT_MAX: positiveInt.default(20),
+    /** Limit for the public catalogue routes, per IP. */
+    CATALOGUE_RATE_LIMIT_WINDOW_MS: positiveInt.default(60 * 1000),
+    CATALOGUE_RATE_LIMIT_MAX: positiveInt.default(60),
+    JSON_BODY_LIMIT: z.string().default('100kb'),
+  })
+  .superRefine((env, ctx) => {
+    if (env.STORAGE === 'mongo') {
+      if (!env.MONGODB_URI) ctx.addIssue({ code: 'custom', path: ['MONGODB_URI'], message: 'MONGODB_URI is required when STORAGE=mongo' });
+      if (!env.MONGODB_DB) ctx.addIssue({ code: 'custom', path: ['MONGODB_DB'], message: 'MONGODB_DB is required when STORAGE=mongo' });
+    }
+    if (env.STORAGE === 'memory' && env.NODE_ENV === 'production') {
+      ctx.addIssue({ code: 'custom', path: ['STORAGE'], message: 'STORAGE=memory is not allowed when NODE_ENV=production' });
+    }
+  });
 
 export type Env = z.infer<typeof envSchema>;
 

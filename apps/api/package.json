@@ -2,21 +2,26 @@
   "name": "@nutritale/api",
   "version": "0.0.0",
   "private": true,
-  "description": "NutriTale API skeleton (Express + TypeScript). No database connection yet.",
+  "description": "NutriTale API (Express 5 + TypeScript): auth, user preferences and catalogue search. Storage: MongoDB or in-memory (tests and local runs).",
   "type": "module",
-  "main": "dist/server.js",
+  "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/server.js",
+    "start": "tsx src/server.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.2.2",
+    "@nutritale/catalogue-search": "^0.1.0",
+    "@nutritale/markets": "^0.1.0",
     "cors": "^2.8.6",
     "express": "^5.3.0",
     "express-rate-limit": "^8.7.5",
     "helmet": "^8.3.0",
+    "jose": "^6.2.18",
+    "mongodb": "^7.9.1",
+    "tsx": "^4.23.15",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -25,7 +30,6 @@
     "@types/node": "^22",
     "@types/supertest": "^7.2.1",
     "supertest": "^7.3.2",
-    "tsx": "^4.23.15",
     "typescript": "~6.0.3",
     "vitest": "^5.1.1"
   }

@@ -2,7 +2,7 @@
 
 MongoDB, API security and Postman test results.
 
-**Status: STARTED 22 Nov 2026.** Only the API skeleton's middleware (`apps/api`, no routes besides `/health`, no database, no accounts) was checked, locally. Every other result below is NOT RUN. Do not change a result unless you ran the check in the current session and can quote the output.
+**Status: STARTED 22 Nov 2026.** Checked locally so far: the API skeleton's middleware (section 3.1), and on 22 Nov 2026 the J07a auth, user and catalogue routes with in-memory storage (section 3.2, vitest and newman; no database, nothing deployed). Every other result below is NOT RUN. Do not change a result unless you ran the check in the current session and can quote the output.
 
 Rules for this file:
 1. HTTP 200 does not mean secure. A secure endpoint also refuses the wrong caller, the wrong data and too many requests.
@@ -40,21 +40,21 @@ Rules for this file:
 ## 3. API security checklist (all NOT STARTED)
 | Control | Built | Tested |
 |---|---|---|
-| Argon2id password hashing | NOT STARTED | NOT RUN |
-| Short-lived access tokens | NOT STARTED | NOT RUN |
-| Refresh-token rotation and revocation | NOT STARTED | NOT RUN |
-| Logout invalidates tokens | NOT STARTED | NOT RUN |
+| Argon2id password hashing | Built (`@node-rs/argon2`, m=19456, t=2, p=1) | PASS, 22 Nov 2026 (see 3.2) |
+| Short-lived access tokens | Built (HS256 JWT, 15 min, `jose`) | PASS, 22 Nov 2026 (see 3.2) |
+| Refresh-token rotation and revocation | Built (SHA-256 hash stored, 30 days, family revoked on reuse) | PASS, 22 Nov 2026 (see 3.2) |
+| Logout invalidates tokens | Built (revokes the session; access tokens check the session) | PASS, 22 Nov 2026 (see 3.2) |
 | Account recovery with expiring, single-use link | NOT STARTED | NOT RUN |
 | Reset and payment links built from a fixed configured base URL, never the request's Host header | NOT STARTED | NOT RUN |
 | Role-based access control | NOT STARTED | NOT RUN |
-| Ownership checks (no insecure direct object references) | NOT STARTED | NOT RUN |
+| Ownership checks (no insecure direct object references) | Built for `/me` routes (user id only from the token; no route takes one) | PASS, 22 Nov 2026 (see 3.2) |
 | Premium entitlement checked on the server | NOT STARTED | NOT RUN |
-| Input validation on every endpoint (shared schemas) | NOT STARTED | NOT RUN |
-| Rate limiting (login, reset, chat, import) | Global limit only (`express-rate-limit`, per IP). Per-route limits NOT STARTED (no such routes yet). | Global: PASS, 22 Nov 2026 (see 3.1). Per-route: NOT RUN |
+| Input validation on every endpoint (shared schemas) | Built for every current route (zod `.strict()`, `apps/api/src/routes/schemas.ts`) | PASS, 22 Nov 2026 (see 3.2) |
+| Rate limiting (login, reset, chat, import) | Global limit, plus a tighter shared limit for register, login and refresh, plus a catalogue limit (per IP, in-process store). Reset, chat, import: no such routes yet. | Global: PASS (3.1, 3.2). Auth and catalogue: PASS, 22 Nov 2026 (see 3.2) |
 | Request size limits | Built (`express.json` limit from `JSON_BODY_LIMIT`) | PASS, 22 Nov 2026 (see 3.1) |
 | CORS limited to known origins | Built (allow-list from `CORS_ORIGINS`) | PASS, 22 Nov 2026 (see 3.1) |
 | Secure HTTP headers | Built (`helmet`, `x-powered-by` off) | PASS, 22 Nov 2026 (see 3.1) |
-| Error responses leak no internals | Built (central error handler) | PASS for 400, 404, 413, 22 Nov 2026 (see 3.1). 429 body is plain text (finding S2). |
+| Error responses leak no internals | Built (central error handler, one shape `{ error: { code, message } }`, `X-Request-Id` header) | PASS for 400, 404, 413 (3.1) and for 400, 401, 403, 404, 409, 429 on the J07a routes, 22 Nov 2026 (see 3.2). S2 fixed. |
 | Audit log for sensitive actions | NOT STARTED | NOT RUN |
 | HTTPS only in production | NOT STARTED | NOT RUN |
 | Food chat limited to food topics, with a general-information health note | NOT STARTED | NOT RUN |
@@ -80,6 +80,33 @@ PASS  rate limit hits 429 by request 6, even with spoofed X-Forwarded-For  [200,
 With `RATE_LIMIT_MAX=5` the same run returned `429 Too many requests, please try again later.` as plain text (finding S2). Invalid `PORT=0` stopped start-up with `Invalid environment: PORT: Too small: expected number to be >=1`, naming the variable and not printing values.
 Unit tests: `npm test -w @nutritale/api` → `Tests 12 passed (12)`.
 
+### 3.2 Evidence: J07a routes, 22 Nov 2026
+Method: `npm test -w @nutritale/api` (vitest + supertest against `createApp` with in-memory repositories and a test clock), then newman 6.2.3 against a local `STORAGE=memory` server started fresh for each collection (`AUTH_RATE_LIMIT_MAX=40`, `CATALOGUE_RATE_LIMIT_MAX=60`, `RATE_LIMIT_MAX=300`, throw-away random `JWT_SECRET`). Not the Postman app. No MongoDB.
+
+vitest, `apps/api`:
+```
+ Test Files  6 passed (6)
+      Tests  106 passed | 4 skipped (110)
+```
+Per file: `security-matrix.test.ts` 48 (44 passed, 4 skipped as not applicable: cases 7, 8, 9 on `GET /me`, case 8 on `POST /auth/logout`), `auth.test.ts` 24, `catalogue.test.ts` 15, `me.test.ts` 8, `app.test.ts` 9, `env.test.ts` 6.
+Test names quoted for the rows above (all passed):
+- `stores an Argon2id hash, not the password` (hash matches `$argon2id$v=19$m=19456,t=2,p=1$`)
+- `case 3: expired access token is 401` (each protected route, clock moved 15 min 1 s)
+- `rotates: returns a new pair and revokes the old refresh token`; `reuse of a revoked token revokes the whole session family`; `refuses an expired refresh token (after 30 days)`
+- `revokes the session: the access token and the refresh token stop working at once`
+- `case 6: another user's record cannot be reached`
+- `gives the same status and body for an unknown email and a wrong password (no enumeration)`
+- `has a tighter rate limit than the global one, shared with register and refresh`; `has its own rate limit with a JSON 429`; `case 11: rate limit returns 429 in the JSON error shape`
+- `case 12: error bodies leak nothing and carry a request id`
+
+newman summaries (every run `exit 0`):
+```
+01-authentication       requests 50   test-scripts 52   assertions 146   failed 0
+02-user-management      requests 300  test-scripts 58   assertions 156   failed 0
+04-ingredient-matching  requests 61   test-scripts 32   assertions 82    failed 0
+```
+Rate-limit lines from the runs: `Pass  rate limit reached: 429 after 24 extra requests` (auth), `... after 271 extra requests` (global, `/me`), `... after 45 extra requests` (catalogue), each followed by `Pass  429 uses the JSON error shape`. Request counts include the requests those rate-limit scripts send.
+
 ## 4. Postman test matrix
 Ten collections, each protected endpoint run through the twelve cases below. Fill the table with PASS, FAIL or NOT RUN and the evidence (request name and the response line).
 
@@ -101,10 +128,10 @@ Cases for every protected endpoint:
 
 | Collection | Endpoints | Cases run | PASS | FAIL | Evidence |
 |---|---|---|---|---|---|
-| 1 Authentication | — | 0 | — | — | NOT RUN |
-| 2 User management | — | 0 | — | — | NOT RUN |
+| 1 Authentication | register, login, refresh, logout | 1, 2, 4, 7, 8, 9, 10, 11, 12 (case 3 in vitest only: needs clock control; 5 not applicable, no roles) | 146 assertions | 0 | newman 22 Nov 2026, see 3.2 |
+| 2 User management | GET /me, PATCH /me/preferences, DELETE /me | 1, 2, 4, 6, 7, 8, 9, 10, 11, 12 (case 3 in vitest only; 5 not applicable) | 156 assertions | 0 | newman 22 Nov 2026, see 3.2. All 12 cases also in vitest `security-matrix.test.ts` |
 | 3 Pantry | — | 0 | — | — | NOT RUN |
-| 4 Ingredient matching | — | 0 | — | — | NOT RUN |
+| 4 Ingredient matching | GET /catalogue/search, GET /catalogue/:id/substitutes (public) | 7, 9, 10, 11, 12 (auth cases do not apply to public routes) | 82 assertions | 0 | newman 22 Nov 2026, see 3.2 |
 | 5 Recipes | — | 0 | — | — | NOT RUN |
 | 6 Meal planner | — | 0 | — | — | NOT RUN |
 | 7 Shopping list | — | 0 | — | — | NOT RUN |
@@ -116,12 +143,15 @@ Cases for every protected endpoint:
 | ID | Severity | What | Where | Fixed | Re-tested |
 |---|---|---|---|---|---|
 | S1 | Medium (before any deployment) | No `trust proxy` setting. Behind a hosting proxy every user would share the proxy's IP, so one busy user could rate-limit everyone. Set `app.set('trust proxy', <exact hop count>)` for the chosen host; never `true`. Spoofed `X-Forwarded-For` is ignored today (probe 3.1). | `apps/api/src/app.ts` | No | No |
-| S2 | Low | The 429 response is plain text, not the API's JSON error format. Clients that parse JSON errors will fail on it. Fix: give `rateLimit` a `handler` that sends `{ error: { code: 'rate_limited', ... } }`. | `apps/api/src/app.ts` | No | No |
+| S2 | Low | The 429 response is plain text, not the API's JSON error format. Clients that parse JSON errors will fail on it. Fix: give `rateLimit` a `handler` that sends `{ error: { code: 'rate_limited', ... } }`. | `apps/api/src/app.ts` | Yes, 22 Nov 2026 (`apps/api/src/http/rateLimit.ts`) | Yes, 22 Nov 2026: `app.test.ts` `applies the rate limit` expects `{ error: { code: 'rate_limited', message: 'Too many requests, try again later' } }`; newman `Pass  429 uses the JSON error shape` |
+| S4 | Low | `POST /auth/register` answers 409 `email_taken` for an existing email, so a caller can learn that an email has an account. Login does not leak this. Fix needs email verification (register always answers the same, the email says what happened). Slowed by the auth rate limit. | `apps/api/src/routes/auth.ts` | No | No |
+| S5 | Medium (before running more than one instance) | Rate-limit counters live in process memory. With several API instances each counts separately, so the real limit is multiplied. Use a shared store (for example MongoDB or Redis) before scaling out. | `apps/api/src/http/rateLimit.ts` | No | No |
 | S3 | Low (build tooling, not shipped to users) | `npm audit`, 22 Nov 2026: "3 moderate severity vulnerabilities", minimatch 7.0.0 - 11.0.0 (GHSA-g3hv-75wg-m249) through `@expo/fingerprint` in `expo`. The offered fix ("Will install expo@52.0.49, which is a breaking change") would downgrade Expo. Do not apply; wait for an Expo patch. | `apps/mobile` dependencies | No | No |
 
 ## 6. What was NOT checked
 (the audit must list this at the end)
-- Authentication of any kind: no accounts, tokens or login routes exist yet (Phase 1). Nothing to test.
-- Postman collections: the Postman connection failed in this session; none exist in the repo.
-- MongoDB connection with `nutritale_app`: the API does not connect yet.
+- Authentication with a real database: the J07a routes were tested only with in-memory storage (3.2). The MongoDB repositories (`apps/api/src/storage/mongo.ts`) are UNVERIFIED: the `mongodb-memory-server` binary download was refused (fastdl.mongodb.org, HTTP 403) in the build session, 22 Nov 2026.
+- Account recovery, roles, audit log: not built.
+- Postman app: collections 1, 2 and 4 (`docs/postman/`) were run with newman only, not in the Postman app or workspace.
+- MongoDB connection with `nutritale_app`: the API can now connect (`STORAGE=mongo`), but it was not run against Atlas.
 - HTTPS and production settings: nothing is deployed.

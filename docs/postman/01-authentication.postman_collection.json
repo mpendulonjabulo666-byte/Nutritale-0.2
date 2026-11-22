@@ -1,0 +1,1148 @@
+{
+  "info": {
+    "_postman_id": "7946a79f-010e-5c7a-8fa9-dcd3c659049b",
+    "name": "NutriTale 01 Authentication",
+    "description": "Register, login, refresh rotation and reuse detection, logout, no user enumeration, auth rate limit. Run against a local API started with STORAGE=memory (see apps/api/README.md). Each collection ends with a rate-limit request that keeps calling until it gets 429, so restart the API between collections. The expired-token case needs clock control and is covered by the vitest suite (apps/api/src/__tests__/security-matrix.test.ts), not here.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('X-Request-Id header is present', function () {",
+          "  pm.expect(pm.response.headers.get('X-Request-Id')).to.match(/^[0-9a-f-]{36}$/);",
+          "});",
+          "if (pm.response.code >= 400) {",
+          "  pm.test('error body is exactly { error: { code, message } }', function () {",
+          "    const body = pm.response.json();",
+          "    pm.expect(Object.keys(body)).to.eql(['error']);",
+          "    pm.expect(Object.keys(body.error).sort()).to.eql(['code', 'message']);",
+          "    pm.expect(body.error.code).to.be.a('string');",
+          "    pm.expect(body.error.message).to.be.a('string');",
+          "  });",
+          "  pm.test('error body leaks nothing (no stack, library or database text)', function () {",
+          "    pm.expect(pm.response.text()).to.not.match(/stack|node_modules|\\.ts:|\\.js:|Mongo|ZodError|argon|jose|passwordHash/i);",
+          "  });",
+          "}",
+          "pm.test('response never contains a password hash', function () {",
+          "  pm.expect(pm.response.text()).to.not.match(/passwordHash|\\$argon2/);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [],
+  "item": [
+    {
+      "name": "Register (valid) -> 201",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"firstName\": \"Thandi\",\n  \"market\": \"ZA\",\n  \"locale\": \"en-ZA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// A fresh email for every run, so the collection can run again without a database reset.",
+              "pm.collectionVariables.set('email', 'postman+' + Date.now() + '-' + Math.floor(Math.random() * 1e6) + '@example.test');"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', function () { pm.response.to.have.status(201); });",
+              "const b = pm.response.json();",
+              "pm.test('returns user and tokens', function () {",
+              "  pm.expect(b.user.email).to.eql(pm.collectionVariables.get('email'));",
+              "  pm.expect(b.tokenType).to.eql('Bearer');",
+              "  pm.expect(b.expiresIn).to.eql(900);",
+              "  pm.expect(b.refreshToken).to.match(/^[A-Za-z0-9_-]{43}$/);",
+              "});",
+              "pm.test('password is never returned', function () { pm.expect(pm.response.text()).to.not.include(pm.environment.get('password')); });",
+              "pm.collectionVariables.set('accessToken', b.accessToken);",
+              "pm.collectionVariables.set('refreshToken', b.refreshToken);",
+              "pm.collectionVariables.set('userId', b.user.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register duplicate email (other case) -> 409",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"firstName\": \"Thandi\",\n  \"market\": \"ZA\",\n  \"locale\": \"en-ZA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.variables.set('email', pm.collectionVariables.get('email').toUpperCase());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 409', function () { pm.response.to.have.status(409); });",
+              "pm.test('error code is email_taken', function () { pm.expect(pm.response.json().error.code).to.eql('email_taken'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register password under 10 characters -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"short@example.test\",\n  \"password\": \"123456789\",\n  \"firstName\": \"A\",\n  \"market\": \"ZA\",\n  \"locale\": \"en-ZA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register missing fields -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"missing@example.test\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register wrong types -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"types@example.test\",\n  \"password\": 12345678901,\n  \"firstName\": \"A\",\n  \"market\": [\n    \"ZA\"\n  ],\n  \"locale\": \"en-ZA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register extra field (role) -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"extra@example.test\",\n  \"password\": \"long-enough-pass\",\n  \"firstName\": \"A\",\n  \"market\": \"ZA\",\n  \"locale\": \"en-ZA\",\n  \"role\": \"admin\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register unknown market -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"mkt@example.test\",\n  \"password\": \"long-enough-pass\",\n  \"firstName\": \"A\",\n  \"market\": \"XX\",\n  \"locale\": \"en-ZA\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register malformed JSON -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login (valid, upper-case email) -> 200",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{emailUpper}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.variables.set('emailUpper', pm.collectionVariables.get('email').toUpperCase());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('returns tokens', function () { pm.expect(pm.response.json().accessToken).to.be.a('string'); });",
+              "pm.collectionVariables.set('login2AccessToken', pm.response.json().accessToken);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login unknown email -> 401 invalid_credentials",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"nobody-here@example.test\",\n  \"password\": \"whatever-password\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is invalid_credentials', function () { pm.expect(pm.response.json().error.code).to.eql('invalid_credentials'); });",
+              "pm.collectionVariables.set('unknownEmailBody', pm.response.text());"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login wrong password -> same 401 as unknown email (no enumeration)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"wrong-password-1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is invalid_credentials', function () { pm.expect(pm.response.json().error.code).to.eql('invalid_credentials'); });",
+              "pm.test('same body as the unknown-email response', function () { pm.expect(pm.response.text()).to.eql(pm.collectionVariables.get('unknownEmailBody')); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login operator injection { $ne } -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": { \"$ne\": \"\" }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh (rotate) -> 200 new pair",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "refresh"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "const b = pm.response.json();",
+              "pm.test('new refresh token differs from the old one', function () { pm.expect(b.refreshToken).to.not.eql(pm.collectionVariables.get('refreshToken')); });",
+              "pm.collectionVariables.set('oldRefreshToken', pm.collectionVariables.get('refreshToken'));",
+              "pm.collectionVariables.set('refreshToken', b.refreshToken);",
+              "pm.collectionVariables.set('accessToken', b.accessToken);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /me with the rotated access token -> 200",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh reuse of the OLD token -> 401",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "refresh"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{oldRefreshToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is invalid_refresh_token', function () { pm.expect(pm.response.json().error.code).to.eql('invalid_refresh_token'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh with the NEW token after reuse -> 401 (family revoked)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "refresh"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is invalid_refresh_token', function () { pm.expect(pm.response.json().error.code).to.eql('invalid_refresh_token'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /me with the new access token after reuse -> 401",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is unauthorized', function () { pm.expect(pm.response.json().error.code).to.eql('unauthorized'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh malformed token -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "refresh"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"short\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh extra field -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "refresh"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n  \"x\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout missing auth -> 401",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is unauthorized', function () { pm.expect(pm.response.json().error.code).to.eql('unauthorized'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout invalid signature -> 401",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzb21lb25lIiwic2lkIjoieCIsImlzcyI6Im51dHJpdGFsZS1hcGkiLCJhdWQiOiJudXRyaXRhbGUtYXBwIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjQxMDAwMDAwMDB9.c2lnbmVkLXdpdGgtYS13cm9uZy1zZWNyZXQtbm90LXJlYWw"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is unauthorized', function () { pm.expect(pm.response.json().error.code).to.eql('unauthorized'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout alg none -> 401",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJzb21lb25lIiwic2lkIjoieCIsImlzcyI6Im51dHJpdGFsZS1hcGkiLCJhdWQiOiJudXRyaXRhbGUtYXBwIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjQxMDAwMDAwMDB9.x"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is unauthorized', function () { pm.expect(pm.response.json().error.code).to.eql('unauthorized'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout extra body field -> 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{login2AccessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"everywhere\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('error code is validation_error', function () { pm.expect(pm.response.json().error.code).to.eql('validation_error'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout (valid) -> 204",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{login2AccessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 204', function () { pm.response.to.have.status(204); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET /me after logout -> 401",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{login2AccessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 401', function () { pm.response.to.have.status(401); });",
+              "pm.test('error code is unauthorized', function () { pm.expect(pm.response.json().error.code).to.eql('unauthorized'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth rate limit -> 429 (repeats login until limited)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"limit@example.test\",\n  \"password\": \"wrong-password-1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('first call answers 401 or 429', function () { pm.expect([401, 429]).to.include(pm.response.code); });",
+              "const header = [{ key: 'Content-Type', value: 'application/json' }];",
+              "",
+              "const max = 100;",
+              "let tries = 0;",
+              "function fire() {",
+              "  tries += 1;",
+              "  pm.sendRequest({ url: pm.environment.get('baseUrl') + '/auth/login', method: 'POST', header, body: { mode: 'raw', raw: JSON.stringify({ email: 'limit@example.test', password: 'wrong-password-1' }) } }, function (err, res) {",
+              "    if (!err && res.code === 429) {",
+              "      pm.test('rate limit reached: 429 after ' + tries + ' extra requests', function () { pm.expect(res.code).to.eql(429); });",
+              "      pm.test('429 uses the JSON error shape', function () { pm.expect(res.json()).to.eql({ error: { code: 'rate_limited', message: 'Too many requests, try again later' } }); });",
+              "      return;",
+              "    }",
+              "    if (tries >= max) { pm.test('rate limit reached within ' + max + ' requests', function () { pm.expect.fail('no 429'); }); return; }",
+              "    fire();",
+              "  });",
+              "}",
+              "fire();"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,14 +1,8 @@
 import request from 'supertest';
 import { describe, expect, it, vi } from 'vitest';
-import { createApp, type AppConfig } from '../app.js';
+import { createApp } from '../app.js';
 import { HttpError } from '../errors.js';
-
-const config: AppConfig = {
-  CORS_ORIGINS: ['http://localhost:3000'],
-  RATE_LIMIT_WINDOW_MS: 60_000,
-  RATE_LIMIT_MAX: 1000,
-  JSON_BODY_LIMIT: '1kb',
-};
+import { testConfig as config } from './helpers.js';
 
 function appWithFailingRoutes(logError = vi.fn()) {
   return createApp(config, {
@@ -53,6 +47,7 @@ describe('GET /health', () => {
     await request(app).get('/health');
     const third = await request(app).get('/health');
     expect(third.status).toBe(429);
+    expect(third.body).toEqual({ error: { code: 'rate_limited', message: 'Too many requests, try again later' } });
   });
 });
 
