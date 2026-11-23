@@ -21,7 +21,8 @@ Status words: DONE, WORKS (on phone, not all four checks yet), BROKEN, PLACEHOLD
 | 6 | Recipe list | prototype `Home.dc.html` cards | NOT STARTED | Must handle hundreds of recipes: search, filters, paging. Allergen filter on by default. |
 | 7 | Recipe details | prototype `Recipe.dc.html` | NOT STARTED | Ingredients (have / missing), steps, allergens with source, "Add missing to shopping list". |
 | 8 | Shopping list | prototype `Shopping.dc.html` + section D | PLACEHOLDER | Grouped by aisle type, real checkboxes, progress, "All bought, move to pantry". |
-| 9 | Profile and settings | prototype `Profile.dc.html` | PLACEHOLDER | Allergies (any allergy, not only the legal list), market, reduce motion, privacy, **Delete my account**. |
+| 9 | Profile and settings | prototype `Profile.dc.html` | PLACEHOLDER | Photo (round, change photo), allergies (any allergy, not only the legal list), market, reduce motion, privacy, **Delete my account** (also deletes the photo). |
+| 12 | Navigation bar restyle | section E, `design/reference/navigation-target.jpg` | NOT STARTED | Active dot, grey inactive tabs, Profile tab shows the user's photo or initials, Discover gets Search / Categories / Collections. |
 | 10 | Add your own item | from the search dead end | NOT STARTED | Name, category, optional quantity and date. |
 | 11 | Forgot password | none yet | NOT STARTED | Email field, then "check your email" screen. Mock only until the API has it. |
 
@@ -62,6 +63,27 @@ The helper is food only. It never asks about illness and gives no medical, diet 
 
 ## D. Shopping list
 Grouped by type like a store (Baking, Dairy, Meat...), quantity on the left, checkbox on the right, "Add your items" row at the top. Stock levels, aisle numbers and store prices need store data, so they are later.
+
+## E. Navigation bar (owner's target: `design/reference/navigation-target.jpg`)
+Copy the **look and behaviour** of the bottom bar in the picture. Keep our own five tabs and our own colours (forest green, gold, cream).
+
+1. **Five tabs:** Home, Pantry, Discover, Shopping, Profile (the order the owner set on 23 Nov 2026). Each tab is an outline icon with its full label under it.
+2. **Active tab:** dark green icon and bold dark label. A small dot sits under the active tab. **Inactive tabs:** grey icon and grey label. Never use colour alone for the active state: the bold label and the dot also show it.
+3. **Profile tab shows the user's own photo** in a round avatar, not an icon. The active state is a green ring around the photo. If the user has no photo yet, show a round circle with their initials. Accessibility label: "Profile". The avatar and initials are decoration for the screen reader; the label carries the meaning.
+4. **Photo rules (V1):** the user picks a photo from the phone in Profile. Until the API can store images, keep the photo on the phone only (mock). Storing photos on a server needs a storage service and a privacy-policy line. UNKNOWN: which storage service and its free-tier limits. Delete my account must also delete the photo. Picking a photo needs `expo-image-picker`, which is a new package: ask the owner first.
+5. **Each tab opens a list screen with a back arrow, a title, a rounded search bar under it, and big photo cards**, as in the picture. A home indicator bar sits under the tab bar on phones that have one (use the safe area; do not draw it).
+6. **Labels never cut off.** At the largest font size the labels may wrap to two lines or the bar may grow taller. They never show "…".
+
+### Discover tab sub-views (from the picture's Recipes tab)
+The picture's Recipes tab branches into Weekly recipes, Categories and Collections. In our app Discover has three views, switched by a small segmented control under the search bar:
+| View | V1? | Contents |
+|---|---|---|
+| Search | Yes | The ingredient search that works now, with "Did you mean". |
+| Categories | Yes | Big photo cards: Breakfast, Lunch, Dinner, Snacks, then more (Meat, Poultry, Fish, Vegetarian...). Tapping one opens the recipe list for it. |
+| Collections | Yes, small | Curated groups, e.g. "Quick weeknight meals". Needs recipes first. Start with 3 collections made from the mock data. |
+| Weekly recipes | **No, later** | This is the meal planner. It stays out of V1. |
+
+Photos: every photo needs a confirmed licence before launch (decision D11). Use the four licensed-unknown legacy photos or plain colour cards for mock only.
 
 ## Later, not V1
 Meal planner, food chat, store finder with maps, store stock and aisle numbers, barcode scanning, expiry push notifications (V1 shows in-app "use soon" banners), premium subscriptions, the trained NutriTale model in the app, admin.

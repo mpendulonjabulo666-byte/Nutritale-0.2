@@ -70,6 +70,8 @@ npm install lucide-react-native
 | J11 | Page team | Page 3, Home (section B). Mock recipes. | All four checks pass. | J10 |
 | J12 | Page team | Page 4, My Pantry rebuild (section C), with the helper box (no AI). | All four checks pass. No row collapses at the largest font. | J10 |
 
+| J13 | Page team | Navigation bar restyle: section E of `docs/PAGES_V1.md`. Active dot, grey inactive tabs, Profile tab with photo or initials, Discover switcher (Search, Categories, Collections). No photo upload yet, initials only. | All four checks pass, including largest font with no "…" on any tab label. | J10 phone check passes |
+
 Parallel work: J04, J05 and J07 can run at the same time as J03, because they touch different folders.
 
 ## Rules for every agent
