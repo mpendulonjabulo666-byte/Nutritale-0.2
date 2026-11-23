@@ -1,6 +1,8 @@
 # AGENT_JOBS_V1.md: build jobs for the owner's agents
 
 Owner: Varrick. Lead agent: Vex. Every job below goes to one niche agent, on its own branch, and the Reviewer marks it DONE.
+
+> **Update 23 Nov 2026:** page work now uses the five-agent page team and the four checks in `docs/AGENT_TEAM.md`, with the page list in `docs/PAGES_V1.md`. Jobs J01 to J08 below stay as the record. New page jobs start at J09.
 Read first: `CLAUDE.md`, `docs/DESIGN_BRIEF.md`, `design/prototype/` (one `.dc.html` file per screen: the look, the copy and the behaviour to copy).
 
 **Nothing is installed yet.** The design session had no app code to install into. Every install below runs on the owner's PC, from the terminal, by the Builder agent, after the owner says yes.
@@ -62,6 +64,11 @@ npm install lucide-react-native
 | J06 | Builder | Mobile screens 1 to 8 from `design/prototype/`, with mock data first. | Each screen matches its prototype file. Every tab works. | J03, J05 |
 | J07 | Builder | API: accounts, catalogue search (the ladder in brief section 5.2), pantry, recipes, shopping list. Connects as `nutritale_app`. | Postman collections 1 to 7 pass the 12 cases in `SECURITY_AUDIT.md`. | J01 |
 | J08 | Reviewer | Check each job against its finish line. Test on a cheap Android phone in a release build. | Report in the checklist format. Only the Reviewer writes DONE. | each job |
+
+| J09 | Page team | P0 fixes in `docs/PAGES_V1.md` (tab labels, floating gear, wrapping buttons). | All four checks pass on every tab. | Owner's yes |
+| J10 | Page team | Page 1, Welcome and sign-in, exactly like `design/reference/welcome-signin-target.jpg` (section A of the page list). Email works; Apple, Google, Facebook show "Coming soon". | All four checks pass. Side by side with the target, the owner says it matches. | J09 |
+| J11 | Page team | Page 3, Home (section B). Mock recipes. | All four checks pass. | J10 |
+| J12 | Page team | Page 4, My Pantry rebuild (section C), with the helper box (no AI). | All four checks pass. No row collapses at the largest font. | J10 |
 
 Parallel work: J04, J05 and J07 can run at the same time as J03, because they touch different folders.
 
