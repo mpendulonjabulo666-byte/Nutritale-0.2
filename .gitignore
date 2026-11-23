@@ -27,3 +27,6 @@ next-env.d.ts
 .turbo/
 .metro-health-check*
 npm-debug.log*
+
+# Agent scout reports and browser screenshots (local only)
+.agent-reports/

@@ -33,3 +33,13 @@ This project is built with AI tools, and it says so. The pitch is stronger when 
 3. Ask the owner before spending money, posting, deploying, deleting data or touching keys.
 4. Needs Tony's accounts (Cortex Synapse: Supabase, Lovable)? Say so. It is a blocker.
 5. Reports use the checklist layout and status words DONE, FAILED, UNABLE, WAITING, CONFIRM?, NEEDS YOUR YES, UNKNOWN.
+
+## Page work: team, checks and token rules
+
+- One team per page: Vex (lead), two scouts, builder, code checker, tester. Definitions are in `.claude/agents/`, the process is in `docs/AGENT_TEAM.md`, and the pages are in `docs/PAGES_V1.md`.
+- A page is DONE only when all four checks pass: code, tests, owner's phone, accessibility (largest font, animations off).
+- Scouts read first and write reports of 40 lines or fewer to `.agent-reports/`. The builder opens only the files the scouts named.
+
+## Browser control: use the Python script
+
+To open, read, check or screenshot any web page, run `python scripts/browser.py` (commands: `check`, `text`, `shot`, `run`). Do not use a browser MCP tool or paste screenshots into the chat. The script prints a short report, which uses far fewer tokens. Open a saved screenshot only when a check fails. Never type a real password, card or ID number with it; use test values only.
