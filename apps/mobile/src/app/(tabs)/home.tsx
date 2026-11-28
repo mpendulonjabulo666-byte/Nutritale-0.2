@@ -1,5 +1,5 @@
 import { Bell, Search } from 'lucide-react-native';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ImageBackground, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RiseIn } from '@/components/rise-in';
 import { cardShadow, colors, displayFont, radius, roles, spacing } from '@/theme';
@@ -9,9 +9,9 @@ const DEEP = '#0F3624';
 
 /** Mock data only. Real recipes come from the API later. Photos need a confirmed licence (decision D11), so tiles are plain colour. */
 const RECIPES = [
-  { id: 'r1', name: 'Veggie Stir-Fry', rating: '4.8', tint: '#DCEFE2' },
-  { id: 'r2', name: 'Chicken Salad', rating: '4.7', tint: '#F6E3B8' },
-  { id: 'r3', name: 'Lentil Soup', rating: '4.6', tint: '#F3D9CF' },
+  { id: 'r1', name: 'Veggie Stir-Fry', rating: '4.8', tint: '#DCEFE2', photo: require('../../../assets/mock/stir-fry.jpg') },
+  { id: 'r2', name: 'Overnight Oats', rating: '4.7', tint: '#F6E3B8', photo: require('../../../assets/mock/oats.jpg') },
+  { id: 'r3', name: 'Lentil Soup', rating: '4.6', tint: '#F3D9CF', photo: null },
 ];
 
 export default function Home() {
@@ -38,13 +38,13 @@ export default function Home() {
           </View>
         </RiseIn>
         <RiseIn index={1}>
-          <View style={styles.hero}>
+          <ImageBackground source={require('../../../assets/mock/stir-fry.jpg')} style={styles.hero} imageStyle={styles.heroImg}>
             <Text style={styles.heroTitle}>Discover Delicious & Healthy Recipes</Text>
             <Text style={styles.heroSub}>Good food. Great life.</Text>
             <Pressable accessibilityRole="button" style={styles.heroBtn}>
               <Text style={styles.heroBtnText}>Explore recipes</Text>
             </Pressable>
-          </View>
+          </ImageBackground>
         </RiseIn>
         <RiseIn index={2}>
           <View style={styles.row}>
@@ -70,7 +70,7 @@ export default function Home() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.cards}>
             {RECIPES.map((r) => (
               <View key={r.id} style={[styles.card, cardShadow]}>
-                <View style={[styles.photo, { backgroundColor: r.tint }]} />
+                {r.photo ? <Image source={r.photo} style={styles.photo} resizeMode="cover" accessibilityLabel={r.name} /> : <View style={[styles.photo, { backgroundColor: r.tint }]} />}
                 <Text style={styles.cardName}>{r.name}</Text>
                 <Text style={styles.cardRating}>★ {r.rating}</Text>
               </View>
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
   content: { backgroundColor: roles.background, padding: spacing.screenSide, gap: spacing.lg, borderTopLeftRadius: 24, borderTopRightRadius: 24, flexGrow: 1 },
   search: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: colors.white, borderRadius: radius.button, borderWidth: 1, borderColor: colors.mint, paddingHorizontal: 14, minHeight: 52 },
   input: { flex: 1, fontSize: 16, color: roles.text, minHeight: 48 },
-  hero: { backgroundColor: DEEP, borderRadius: 20, padding: spacing.lg, gap: spacing.sm },
+  hero: { backgroundColor: DEEP, borderRadius: 20, padding: spacing.lg, gap: spacing.sm, overflow: 'hidden' },
+  heroImg: { opacity: 0.55, resizeMode: 'cover' },
   heroTitle: { fontSize: 24, lineHeight: 32, fontWeight: '700', color: '#F3E6C0', fontFamily: displayFont },
   heroSub: { fontSize: 16, color: '#E4EBE5' },
   heroBtn: { alignSelf: 'flex-start', backgroundColor: GOLD, borderRadius: radius.button, minHeight: 44, paddingHorizontal: 18, justifyContent: 'center', marginTop: spacing.sm },

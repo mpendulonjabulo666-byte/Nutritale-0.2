@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Mail } from 'lucide-react-native';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RiseIn } from '@/components/rise-in';
 import { colors, displayFont, radius, spacing } from '@/theme';
@@ -38,6 +38,7 @@ export default function Welcome() {
       <ScrollView contentContainerStyle={styles.content}>
         <RiseIn index={0}>
           <View style={styles.hero}>
+            <Image source={require('../../assets/mock/book-mark.png')} style={styles.book} resizeMode="contain" accessibilityLabel="Open recipe book with a green leaf" />
             <Text style={styles.brand} accessibilityRole="header">
               NutriTale
             </Text>
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
   hero: { alignItems: 'center', gap: spacing.sm },
   brand: { fontSize: 44, fontWeight: '700', color: '#F3E6C0', fontFamily: displayFont, textAlign: 'center' },
   sub: { fontSize: 15, color: '#E4EBE5', textAlign: 'center' },
+  book: { width: '100%', maxWidth: 300, aspectRatio: 600 / 308 },
   rule: { width: 56, height: 2, backgroundColor: GOLD, marginVertical: spacing.sm },
   tagline: { fontSize: 20, lineHeight: 28, color: '#F3E6C0', fontStyle: 'italic', fontFamily: displayFont, textAlign: 'center' },
   actions: { gap: spacing.md },
